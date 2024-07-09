@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "PlayerInputReader.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UPlayerInputReader : public UActorComponent
 {
@@ -23,6 +22,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
 };
