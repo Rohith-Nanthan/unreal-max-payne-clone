@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputMappingContext.h"
 #include "Components/ActorComponent.h"
 #include "PlayerInputReader.generated.h"
+
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class UPlayerInputReader : public UActorComponent
@@ -13,24 +16,12 @@ class UPlayerInputReader : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UPlayerInputReader();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void SetupInputComponent(UInputComponent* Inputcomponent, APlayerController* PlayerController);
 
 private:
+	UPROPERTY()
 	UEnhancedInputComponent* EnhancedInputComponent;
-
-	void OnJumpTriggered();
-	void OnMoveTriggered(const FInputActionValue& InputActionValue);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -41,4 +32,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* MoveInputAction;
+
+private:
+	void OnJumpTriggered();
+	void OnMoveTriggered(const FInputActionValue& InputActionValue);
 };
