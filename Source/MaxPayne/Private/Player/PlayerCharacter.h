@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PlayerInputReader.h"
 #include "GameFramework/Pawn.h"
 #include "Components/ShapeComponent.h"
 #include "PlayerCharacter.generated.h"
@@ -23,14 +24,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-private:
-
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCapsuleComponent* CapsuleCollider;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPlayerInputReader* PlayerInputReader;
 };

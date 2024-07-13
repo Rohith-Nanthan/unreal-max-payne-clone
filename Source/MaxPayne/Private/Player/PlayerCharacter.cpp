@@ -2,33 +2,35 @@
 
 #include "Player/PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/InputComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
+	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReader>(TEXT("InputReader"));
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		PlayerInputReader->SetupInputComponent(PlayerInputComponent, PlayerController);
+	}
 }
-
