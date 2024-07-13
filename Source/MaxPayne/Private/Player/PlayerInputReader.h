@@ -30,6 +30,7 @@ private:
 	UEnhancedInputComponent* EnhancedInputComponent;
 
 	void OnJumpTriggered();
+	void OnMoveTriggered(const FInputActionValue& InputActionValue);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -37,4 +38,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* JumpInputAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* MoveInputAction;
 };

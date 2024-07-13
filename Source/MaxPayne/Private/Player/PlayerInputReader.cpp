@@ -44,6 +44,8 @@ void UPlayerInputReader::SetupInputComponent(UInputComponent* Inputcomponent, AP
 
 	EnhancedInputComponent->BindAction(JumpInputAction, ETriggerEvent::Triggered, this,
 	                                   &UPlayerInputReader::OnJumpTriggered);
+	EnhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this,
+	                                   &UPlayerInputReader::OnMoveTriggered);
 }
 
 void UPlayerInputReader::OnJumpTriggered()
@@ -52,5 +54,15 @@ void UPlayerInputReader::OnJumpTriggered()
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, TEXT("Jump Pressed"));
+	}
+}
+
+void UPlayerInputReader::OnMoveTriggered(const FInputActionValue& InputActionValue)
+{
+	const FVector2d MoveInput = InputActionValue.Get<FVector2d>();
+	if (GEngine)
+	{
+		const FString MoveInputValue = FString::Printf(TEXT("Move x: %f, y %f"), MoveInput.X, MoveInput.Y);
+		GEngine->AddOnScreenDebugMessage(2, 1.f, FColor::Green, MoveInputValue);
 	}
 }
