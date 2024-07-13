@@ -1,16 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Player/PlayerInputReader.h"
+#include "Player/PlayerInputReaderComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 
-UPlayerInputReader::UPlayerInputReader()
+UPlayerInputReaderComponent::UPlayerInputReaderComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UPlayerInputReader::SetupInputComponent(UInputComponent* Inputcomponent, APlayerController* PlayerController)
+void UPlayerInputReaderComponent::SetupInputComponent(UInputComponent* Inputcomponent,
+                                                      APlayerController* PlayerController)
 {
 	EnhancedInputComponent = Cast<UEnhancedInputComponent>(Inputcomponent);
 	if (UEnhancedInputLocalPlayerSubsystem* EnhancedSubsystem =
@@ -20,12 +21,12 @@ void UPlayerInputReader::SetupInputComponent(UInputComponent* Inputcomponent, AP
 	}
 
 	EnhancedInputComponent->BindAction(JumpInputAction, ETriggerEvent::Triggered, this,
-	                                   &UPlayerInputReader::OnJumpTriggered);
+	                                   &UPlayerInputReaderComponent::OnJumpTriggered);
 	EnhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this,
-	                                   &UPlayerInputReader::OnMoveTriggered);
+	                                   &UPlayerInputReaderComponent::OnMoveTriggered);
 }
 
-void UPlayerInputReader::OnJumpTriggered()
+void UPlayerInputReaderComponent::OnJumpTriggered()
 {
 	if (GEngine)
 	{
@@ -33,7 +34,7 @@ void UPlayerInputReader::OnJumpTriggered()
 	}
 }
 
-void UPlayerInputReader::OnMoveTriggered(const FInputActionValue& InputActionValue)
+void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& InputActionValue)
 {
 	const FVector2d MoveInput = InputActionValue.Get<FVector2d>();
 	if (GEngine)

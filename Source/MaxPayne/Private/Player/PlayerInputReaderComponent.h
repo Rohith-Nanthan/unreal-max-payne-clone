@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "PlayerInputReader.generated.h"
+#include "PlayerInputReaderComponent.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
-class UPlayerInputReader : public UActorComponent
+class UPlayerInputReaderComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UPlayerInputReader();
+	UPlayerInputReaderComponent();
 	void SetupInputComponent(UInputComponent* Inputcomponent, APlayerController* PlayerController);
 
 private:

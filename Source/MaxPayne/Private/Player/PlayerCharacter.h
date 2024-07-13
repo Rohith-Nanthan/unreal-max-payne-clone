@@ -7,8 +7,8 @@
 #include "PlayerCharacter.generated.h"
 
 class UCapsuleComponent;
-class UPlayerInputReader;
-
+class UPlayerInputReaderComponent;
+class UPlayerMovementComponent;
 UCLASS()
 class APlayerCharacter : public APawn
 {
@@ -25,5 +25,8 @@ protected:
 	UCapsuleComponent* CapsuleCollider;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UPlayerInputReader* PlayerInputReader;
+	UPlayerInputReaderComponent* PlayerInputReader;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPlayerMovementComponent* PlayerMover;
 };

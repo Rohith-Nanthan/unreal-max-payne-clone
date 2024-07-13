@@ -1,17 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Player/PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
-#include "PlayerInputReader.h"
-
-#include "Player/PlayerCharacter.h"
+#include "PlayerInputReaderComponent.h"
+#include "PlayerMovementComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
-	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReader>(TEXT("InputReader"));
+	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReaderComponent>(TEXT("InputReader"));
+	PlayerMover = CreateDefaultSubobject<UPlayerMovementComponent>(TEXT("PlayerMover"));
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
