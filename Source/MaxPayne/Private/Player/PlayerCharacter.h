@@ -9,6 +9,7 @@
 class UCapsuleComponent;
 class UPlayerInputReaderComponent;
 class UPlayerMovementComponent;
+
 UCLASS()
 class APlayerCharacter : public APawn
 {
@@ -16,17 +17,23 @@ class APlayerCharacter : public APawn
 
 public:
 	APlayerCharacter();
-
-public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UCapsuleComponent* CapsuleCollider;
+	TObjectPtr<UCapsuleComponent> CapsuleCollider;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UPlayerInputReaderComponent* PlayerInputReader;
+	TObjectPtr<UPlayerInputReaderComponent> PlayerInputReader;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	UPlayerMovementComponent* PlayerMover;
+	TObjectPtr<UPlayerMovementComponent> PlayerMover;
+
+private:
+	UFUNCTION()
+	void OnJumpInputReceived();
 };

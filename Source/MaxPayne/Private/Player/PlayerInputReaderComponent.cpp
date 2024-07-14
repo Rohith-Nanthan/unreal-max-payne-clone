@@ -32,6 +32,8 @@ void UPlayerInputReaderComponent::OnJumpTriggered()
 	{
 		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, TEXT("Jump Pressed"));
 	}
+
+	OnJumpInputReceived.Broadcast();
 }
 
 void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& InputActionValue)

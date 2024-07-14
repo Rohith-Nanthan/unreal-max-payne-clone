@@ -21,19 +21,25 @@ public:
 
 private:
 	UPROPERTY()
-	UEnhancedInputComponent* EnhancedInputComponent;
+	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UInputMappingContext* InputMappingContext;
+	TObjectPtr<UInputMappingContext> InputMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UInputAction* JumpInputAction;
+	TObjectPtr<UInputAction> JumpInputAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UInputAction* MoveInputAction;
+	TObjectPtr<UInputAction> MoveInputAction;
 
 private:
 	void OnJumpTriggered();
 	void OnMoveTriggered(const FInputActionValue& InputActionValue);
+
+private:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInputReceived);
+
+public:
+	FOnJumpInputReceived OnJumpInputReceived;
 };
