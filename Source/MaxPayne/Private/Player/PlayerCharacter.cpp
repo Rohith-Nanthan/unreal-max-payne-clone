@@ -44,4 +44,6 @@ void APlayerCharacter::OnJumpInputReceived()
 	{
 		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Yellow,TEXT("Jump input received"));
 	}
+
+	PlayerMover->StartJumping();
 }

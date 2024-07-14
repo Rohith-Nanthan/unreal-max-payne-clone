@@ -23,11 +23,43 @@ void UPlayerMovementComponent::BeginPlay()
 }
 
 
-// Called every frame
 void UPlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                              FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (bIsJumping)
+	{
+		Jump(DeltaTime);
+	}
+}
+
+void UPlayerMovementComponent::Jump(float DeltaTime)
+{
+	if (ElapsedJumpDuration >= JumpDuration)
+	{
+		StopJumping();
+		return;
+	}
+
+	const FVector JumpVector = FVector::UpVector * JumpSpeed * DeltaTime;
+	MoveUpdatedComponent(JumpVector, FQuat::Identity, true);
+	ElapsedJumpDuration += DeltaTime;
+}
+
+void UPlayerMovementComponent::StartJumping()
+{
+	if (bIsJumping)
+	{
+		return;
+	}
+
+	bIsJumping = true;
+	ElapsedJumpDuration = 0.f;
+}
+
+void UPlayerMovementComponent::StopJumping()
+{
+	bIsJumping = false;
+	ElapsedJumpDuration = 0.f;
 }

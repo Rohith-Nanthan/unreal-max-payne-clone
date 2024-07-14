@@ -24,4 +24,22 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Jump)
+	float JumpSpeed = 3.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Jump)
+	float JumpDuration = 2.f;
+
+private:
+	bool bIsJumping;
+	float ElapsedJumpDuration;
+
+private:
+	void Jump(float DeltaTime);
+
+public:
+	void StartJumping();
+	void StopJumping();
 };
