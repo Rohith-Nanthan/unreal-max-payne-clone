@@ -32,6 +32,10 @@ void UPlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	{
 		Jump(DeltaTime);
 	}
+	else
+	{
+		FallDown(DeltaTime);
+	}
 }
 
 void UPlayerMovementComponent::Jump(float DeltaTime)
@@ -45,6 +49,12 @@ void UPlayerMovementComponent::Jump(float DeltaTime)
 	const FVector JumpVector = FVector::UpVector * JumpSpeed * DeltaTime;
 	MoveUpdatedComponent(JumpVector, FQuat::Identity, true);
 	ElapsedJumpDuration += DeltaTime;
+}
+
+void UPlayerMovementComponent::FallDown(float DeltaTime)
+{
+	const FVector FallDownVector = FVector::DownVector * GravitySpeed * DeltaTime;
+	MoveUpdatedComponent(FallDownVector, FQuat::Identity, true);
 }
 
 void UPlayerMovementComponent::StartJumping()

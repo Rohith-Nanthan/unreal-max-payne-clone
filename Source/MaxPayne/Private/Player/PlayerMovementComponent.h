@@ -26,8 +26,11 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Default)
+	float GravitySpeed = 300.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Jump)
-	float JumpSpeed = 3.f;
+	float JumpSpeed = 300.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Jump)
 	float JumpDuration = 2.f;
@@ -38,6 +41,7 @@ private:
 
 private:
 	void Jump(float DeltaTime);
+	void FallDown(float DeltaTime);
 
 public:
 	void StartJumping();
