@@ -35,16 +35,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Jump)
 	float JumpDuration = 2.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Walk)
+	float WalkingSpeed = 300.f;
+
 private:
 	bool bIsJumping;
 	float ElapsedJumpDuration;
 	FHitResult LastMovementHitResult;
 
 private:
-	void Jump(float DeltaTime);
-	void FallDown(float DeltaTime);
+	FVector GetJumpDelta(float DeltaTime);
+	FVector GetFallDownDelta(float DeltaTime);
+	FVector GetWalkDelta(float DeltaTime);
 
 public:
 	void StartJumping();
 	void StopJumping();
+
+	void MoveAlongDirection(FVector Direction);
 };

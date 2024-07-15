@@ -38,10 +38,12 @@ void UPlayerInputReaderComponent::OnJumpTriggered()
 
 void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& InputActionValue)
 {
-	const FVector2d MoveInput = InputActionValue.Get<FVector2d>();
+	const FVector2D MoveInput = InputActionValue.Get<FVector2D>();
 	if (GEngine)
 	{
 		const FString MoveInputValue = FString::Printf(TEXT("Move x: %f, y %f"), MoveInput.X, MoveInput.Y);
 		GEngine->AddOnScreenDebugMessage(2, 1.f, FColor::Green, MoveInputValue);
 	}
+
+	OnMoveInputReceived.Broadcast(MoveInput);
 }

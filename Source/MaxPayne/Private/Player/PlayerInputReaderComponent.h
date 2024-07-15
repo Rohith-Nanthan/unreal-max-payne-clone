@@ -40,6 +40,9 @@ private:
 private:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInputReceived);
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveInputReceived, FVector2D, MovementInput);
+
 public:
 	FOnJumpInputReceived OnJumpInputReceived;
+	FOnMoveInputReceived OnMoveInputReceived;
 };

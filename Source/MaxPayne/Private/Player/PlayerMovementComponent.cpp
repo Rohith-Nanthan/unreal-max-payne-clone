@@ -28,33 +28,41 @@ void UPlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	FVector Delta = FVector::ZeroVector;
 	if (bIsJumping)
 	{
-		Jump(DeltaTime);
+		Delta += GetJumpDelta(DeltaTime);
 	}
 	else
 	{
-		FallDown(DeltaTime);
+		Delta += GetFallDownDelta(DeltaTime);
 	}
+
+	Delta += GetWalkDelta(DeltaTime);
+
+	SafeMoveUpdatedComponent(Delta, FQuat::Identity, true, LastMovementHitResult);
 }
 
-void UPlayerMovementComponent::Jump(float DeltaTime)
+FVector UPlayerMovementComponent::GetJumpDelta(float DeltaTime)
 {
 	if (ElapsedJumpDuration >= JumpDuration)
 	{
 		StopJumping();
-		return;
+		return FVector::ZeroVector;
 	}
 
-	const FVector JumpVector = FVector::UpVector * JumpSpeed * DeltaTime;
-	MoveUpdatedComponent(JumpVector, FQuat::Identity, true);
 	ElapsedJumpDuration += DeltaTime;
+	return FVector::UpVector * JumpSpeed * DeltaTime;
 }
 
-void UPlayerMovementComponent::FallDown(float DeltaTime)
+FVector UPlayerMovementComponent::GetFallDownDelta(float DeltaTime)
 {
-	const FVector FallDownVector = FVector::DownVector * GravitySpeed * DeltaTime;
-	SafeMoveUpdatedComponent(FallDownVector, FQuat::Identity, true, LastMovementHitResult);
+	return FVector::DownVector * GravitySpeed * DeltaTime;
+}
+
+FVector UPlayerMovementComponent::GetWalkDelta(float DeltaTime)
+{
+	return ConsumeInputVector() * WalkingSpeed * DeltaTime;
 }
 
 void UPlayerMovementComponent::StartJumping()
@@ -72,4 +80,9 @@ void UPlayerMovementComponent::StopJumping()
 {
 	bIsJumping = false;
 	ElapsedJumpDuration = 0.f;
+}
+
+void UPlayerMovementComponent::MoveAlongDirection(FVector Direction)
+{
+	AddInputVector(Direction.GetSafeNormal());
 }

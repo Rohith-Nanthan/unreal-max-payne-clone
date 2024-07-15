@@ -36,4 +36,7 @@ protected:
 private:
 	UFUNCTION()
 	void OnJumpInputReceived();
+
+	UFUNCTION()
+	void OnMoveInputReceived(FVector2D MovementInput);
 };
