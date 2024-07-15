@@ -54,7 +54,7 @@ void UPlayerMovementComponent::Jump(float DeltaTime)
 void UPlayerMovementComponent::FallDown(float DeltaTime)
 {
 	const FVector FallDownVector = FVector::DownVector * GravitySpeed * DeltaTime;
-	MoveUpdatedComponent(FallDownVector, FQuat::Identity, true);
+	SafeMoveUpdatedComponent(FallDownVector, FQuat::Identity, true, LastMovementHitResult);
 }
 
 void UPlayerMovementComponent::StartJumping()

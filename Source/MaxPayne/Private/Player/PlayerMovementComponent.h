@@ -38,6 +38,7 @@ protected:
 private:
 	bool bIsJumping;
 	float ElapsedJumpDuration;
+	FHitResult LastMovementHitResult;
 
 private:
 	void Jump(float DeltaTime);
