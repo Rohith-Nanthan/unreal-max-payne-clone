@@ -33,7 +33,7 @@ void UPlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	{
 		Delta += GetJumpDelta(DeltaTime);
 	}
-	else
+	else if (!IsOnGround())
 	{
 		Delta += GetFallDownDelta(DeltaTime);
 	}
@@ -63,6 +63,17 @@ FVector UPlayerMovementComponent::GetFallDownDelta(float DeltaTime)
 FVector UPlayerMovementComponent::GetWalkDelta(float DeltaTime)
 {
 	return ConsumeInputVector() * WalkingSpeed * DeltaTime;
+}
+
+bool UPlayerMovementComponent::IsOnGround()
+{
+	FHitResult HitResult(1);
+	FVector StartingLocation = GetActorFeetLocation();
+	FVector EndLocation = StartingLocation + (FVector::DownVector * RaycastDistanceForGround);
+	DrawDebugLine(GetWorld(), StartingLocation, EndLocation, FColor::Red);
+	return GetWorld()->LineTraceSingleByObjectType(HitResult, StartingLocation, EndLocation,
+	                                               FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+	                                               FCollisionQueryParams(FName(), false, GetOwner()));
 }
 
 void UPlayerMovementComponent::StartJumping()
