@@ -9,6 +9,8 @@
 class UCapsuleComponent;
 class UPlayerInputReaderComponent;
 class UPlayerMovementComponent;
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class APlayerCharacter : public APawn
@@ -26,6 +28,12 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UCapsuleComponent> CapsuleCollider;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<UCameraComponent> CameraComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UPlayerInputReaderComponent> PlayerInputReader;

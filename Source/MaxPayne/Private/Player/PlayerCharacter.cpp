@@ -1,20 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Player/PlayerCharacter.h"
+
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
+
 #include "PlayerInputReaderComponent.h"
 #include "PlayerMovementComponent.h"
+#include "Camera/CameraComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
-
+	//Scene Components
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
-	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReaderComponent>(TEXT("InputReader"));
 
+	SpringArmComponent=CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArmComponent->AttachToComponent(CapsuleCollider,FAttachmentTransformRules::KeepRelativeTransform);
+	
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	CameraComponent->AttachToComponent(SpringArmComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	
+	//Actor components
+	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReaderComponent>(TEXT("InputReader"));
 	PlayerMover = CreateDefaultSubobject<UPlayerMovementComponent>(TEXT("PlayerMover"));
 	PlayerMover->UpdatedComponent = CapsuleCollider;
+
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
