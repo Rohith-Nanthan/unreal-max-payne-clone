@@ -56,11 +56,13 @@ bool UPlayerMovementComponent::IsOnGround()
 {
 	FHitResult HitResult(1);
 	FVector StartingLocation = GetActorFeetLocation();
-	FVector EndLocation = StartingLocation + (FVector::DownVector * RaycastDistanceForGround);
+	FVector EndLocation = StartingLocation + (FVector::DownVector * GroundDetectionDistance);
 	DrawDebugLine(GetWorld(), StartingLocation, EndLocation, FColor::Red);
-	return GetWorld()->LineTraceSingleByObjectType(HitResult, StartingLocation, EndLocation,
-	                                               FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
-	                                               FCollisionQueryParams(FName(), false, GetOwner()));
+	return GetWorld()->SweepSingleByObjectType(HitResult, StartingLocation, EndLocation, FQuat::Identity,
+	                                           FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+	                                           FCollisionShape::MakeCapsule(GroundDetectionCapsuleRadius,
+	                                                                        GroundDetectionCapsuleHeight),
+	                                           FCollisionQueryParams(FName(), false, GetOwner()));
 }
 
 void UPlayerMovementComponent::StartJumping()

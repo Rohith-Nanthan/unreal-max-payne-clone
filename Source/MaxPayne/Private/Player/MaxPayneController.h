@@ -34,6 +34,19 @@ private:
 	UPROPERTY()
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
 
+public:
+	FORCEINLINE FVector GetForwardVectorProjectedAlong_XY_Plane() const
+	{
+		const FVector ControllerForwardDirection = GetControlRotation().Vector();
+		return FVector::VectorPlaneProject(
+			ControllerForwardDirection, FVector::UpVector);
+	}
+
+	FORCEINLINE FVector GetRightVectorProjectedAlong_XY_Plane() const
+	{
+		return GetForwardVectorProjectedAlong_XY_Plane().RotateAngleAxis(90, FVector::UpVector);
+	}
+
 private:
 	UFUNCTION()
 	void OnJumpInputReceived();

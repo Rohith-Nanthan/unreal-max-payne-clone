@@ -78,14 +78,9 @@ void AMaxPayneController::OnMoveInputReceived(FVector2D MovementInput)
 	{
 		return;
 	}
-
-	const FVector ControllerForwardDirection = GetControlRotation().Vector();
-	const FVector ForwardDirectionAlong_XZ_Plane = FVector::VectorPlaneProject(
-		ControllerForwardDirection, FVector::UpVector);
-	const FVector ControllerRightDirection = ForwardDirectionAlong_XZ_Plane.RotateAngleAxis(90, FVector::UpVector);
-
-	const FVector ForwardMovement = ForwardDirectionAlong_XZ_Plane * MovementInput.X;
-	const FVector StrafeMovement = ControllerRightDirection * MovementInput.Y;
+	
+	const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane() * MovementInput.X;
+	const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane() * MovementInput.Y;
 	const FVector MovementDirection = ForwardMovement + StrafeMovement;
 	PlayerMover->MoveAlongDirection(MovementDirection);
 }
