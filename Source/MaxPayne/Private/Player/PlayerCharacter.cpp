@@ -15,12 +15,12 @@ APlayerCharacter::APlayerCharacter()
 	//Scene Components
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
 
-	SpringArmComponent=CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArmComponent->AttachToComponent(CapsuleCollider,FAttachmentTransformRules::KeepRelativeTransform);
-	
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArmComponent->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
+
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->AttachToComponent(SpringArmComponent,FAttachmentTransformRules::KeepRelativeTransform);
-	
+	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
 	//Actor components
 	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReaderComponent>(TEXT("InputReader"));
 	PlayerMover = CreateDefaultSubobject<UPlayerMovementComponent>(TEXT("PlayerMover"));
@@ -31,6 +31,7 @@ APlayerCharacter::APlayerCharacter()
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Setting player input component from character"));
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -43,6 +44,8 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	PlayerInputReader->OnJumpInputReceived.AddDynamic(this, &APlayerCharacter::OnJumpInputReceived);
 	PlayerInputReader->OnMoveInputReceived.AddDynamic(this, &APlayerCharacter::OnMoveInputReceived);
+
+	PrintController();
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -71,4 +74,9 @@ void APlayerCharacter::OnMoveInputReceived(FVector2D MovementInput)
 
 	const FVector MovementDirection(MovementInput.X, MovementInput.Y, 0.f);
 	PlayerMover->MoveAlongDirection(MovementDirection);
+}
+
+void APlayerCharacter::PrintController()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Controller is: %s"), *GetController()->GetClass()->GetName());
 }

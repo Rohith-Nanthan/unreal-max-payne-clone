@@ -47,4 +47,7 @@ private:
 
 	UFUNCTION()
 	void OnMoveInputReceived(FVector2D MovementInput);
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void PrintController();
 };
