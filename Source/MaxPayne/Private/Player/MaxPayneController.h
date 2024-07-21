@@ -33,7 +33,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
-	
+
 private:
 	UFUNCTION()
 	void OnJumpInputReceived();

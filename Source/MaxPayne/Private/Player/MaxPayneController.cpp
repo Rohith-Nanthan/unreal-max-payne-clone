@@ -74,17 +74,19 @@ void AMaxPayneController::OnJumpInputReceived()
 
 void AMaxPayneController::OnMoveInputReceived(FVector2D MovementInput)
 {
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Yellow,TEXT("Move input received"));
-	}
-
 	if (PlayerMover == nullptr)
 	{
 		return;
 	}
 
-	const FVector MovementDirection(MovementInput.X, MovementInput.Y, 0.f);
+	const FVector ControllerForwardDirection = GetControlRotation().Vector();
+	const FVector ForwardDirectionAlong_XZ_Plane = FVector::VectorPlaneProject(
+		ControllerForwardDirection, FVector::UpVector);
+	const FVector ControllerRightDirection = ForwardDirectionAlong_XZ_Plane.RotateAngleAxis(90, FVector::UpVector);
+
+	const FVector ForwardMovement = ForwardDirectionAlong_XZ_Plane * MovementInput.X;
+	const FVector StrafeMovement = ControllerRightDirection * MovementInput.Y;
+	const FVector MovementDirection = ForwardMovement + StrafeMovement;
 	PlayerMover->MoveAlongDirection(MovementDirection);
 }
 
