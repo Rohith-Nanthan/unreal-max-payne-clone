@@ -9,17 +9,14 @@
 class UPlayerInputReaderComponent;
 class UPlayerMovementComponent;
 class AMaxPayneCharacter;
-/**
- * 
- */
+
 UCLASS()
 class AMaxPayneController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-	AMaxPayneController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	AMaxPayneController();
+	explicit AMaxPayneController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 protected:
 	virtual void SetupInputComponent() override;

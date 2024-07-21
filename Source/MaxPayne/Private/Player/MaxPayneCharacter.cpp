@@ -4,7 +4,6 @@
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Components/InputComponent.h"
 
 #include "PlayerMovementComponent.h"
 #include "Camera/CameraComponent.h"
@@ -25,26 +24,4 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	PlayerMover->UpdatedComponent = CapsuleCollider;
 
 	PrimaryActorTick.bCanEverTick = false;
-}
-
-void AMaxPayneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Setting player input component from character"));
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void AMaxPayneCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	PrintController();
-}
-
-void AMaxPayneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-}
-
-void AMaxPayneCharacter::PrintController()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Controller is: %s"), *GetController()->GetClass()->GetName());
 }

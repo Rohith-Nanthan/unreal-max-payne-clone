@@ -18,11 +18,6 @@ class AMaxPayneCharacter : public APawn
 
 public:
 	AMaxPayneCharacter();
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
-protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -36,9 +31,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
-
-private:
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void PrintController();
 };

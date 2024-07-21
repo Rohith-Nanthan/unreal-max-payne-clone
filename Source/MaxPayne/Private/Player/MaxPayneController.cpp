@@ -9,20 +9,12 @@
 
 AMaxPayneController::AMaxPayneController(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called const with obj init"));
 	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReaderComponent>(TEXT("InputReader"));
-}
-
-AMaxPayneController::AMaxPayneController()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Called const"));
 }
 
 void AMaxPayneController::SetupInputComponent()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Setting player input component from controller"));
 	Super::SetupInputComponent();
-
 	PlayerInputReader->SetupInputComponent(InputComponent, this);
 }
 
