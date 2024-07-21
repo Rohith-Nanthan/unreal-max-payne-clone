@@ -7,7 +7,6 @@
 #include "PlayerCharacter.generated.h"
 
 class UCapsuleComponent;
-class UPlayerInputReaderComponent;
 class UPlayerMovementComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -35,18 +34,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UPlayerInputReaderComponent> PlayerInputReader;
-
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
 
 private:
-	UFUNCTION()
-	void OnJumpInputReceived();
-
-	UFUNCTION()
-	void OnMoveInputReceived(FVector2D MovementInput);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
 	void PrintController();
