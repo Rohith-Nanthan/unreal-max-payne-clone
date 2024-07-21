@@ -40,4 +40,7 @@ private:
 
 	UFUNCTION()
 	void OnMoveInputReceived(FVector2D MovementInput);
+
+	UFUNCTION()
+	void OnLookInputReceived(FVector2D LookInput);
 };

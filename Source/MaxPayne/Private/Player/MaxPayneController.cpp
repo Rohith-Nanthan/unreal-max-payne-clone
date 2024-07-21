@@ -11,7 +11,7 @@
 AMaxPayneController::AMaxPayneController(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
 	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReaderComponent>(TEXT("InputReader"));
-	PlayerCameraManagerClass=AMaxPayneCameraManager::StaticClass();
+	PlayerCameraManagerClass = AMaxPayneCameraManager::StaticClass();
 }
 
 void AMaxPayneController::SetupInputComponent()
@@ -40,6 +40,7 @@ void AMaxPayneController::OnPossess(APawn* InPawn)
 
 	PlayerInputReader->OnJumpInputReceived.AddDynamic(this, &AMaxPayneController::OnJumpInputReceived);
 	PlayerInputReader->OnMoveInputReceived.AddDynamic(this, &AMaxPayneController::OnMoveInputReceived);
+	PlayerInputReader->OnLookInputReceived.AddDynamic(this, &AMaxPayneController::OnLookInputReceived);
 }
 
 void AMaxPayneController::OnUnPossess()
@@ -53,6 +54,7 @@ void AMaxPayneController::OnUnPossess()
 
 	PlayerInputReader->OnJumpInputReceived.RemoveDynamic(this, &AMaxPayneController::OnJumpInputReceived);
 	PlayerInputReader->OnMoveInputReceived.RemoveDynamic(this, &AMaxPayneController::OnMoveInputReceived);
+	PlayerInputReader->OnLookInputReceived.RemoveDynamic(this, &AMaxPayneController::OnLookInputReceived);
 }
 
 void AMaxPayneController::OnJumpInputReceived()
@@ -81,7 +83,18 @@ void AMaxPayneController::OnMoveInputReceived(FVector2D MovementInput)
 	{
 		return;
 	}
-	
+
 	const FVector MovementDirection(MovementInput.X, MovementInput.Y, 0.f);
 	PlayerMover->MoveAlongDirection(MovementDirection);
+}
+
+void AMaxPayneController::OnLookInputReceived(FVector2D LookInput)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(5, 1.f, FColor::Yellow,TEXT("Look input received"));
+	}
+
+	AddPitchInput(LookInput.Y);
+	AddYawInput(LookInput.X);
 }

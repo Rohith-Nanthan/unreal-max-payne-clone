@@ -28,6 +28,9 @@ protected:
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UInputAction> LookInputAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UInputAction> JumpInputAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -36,13 +39,16 @@ protected:
 private:
 	void OnJumpTriggered();
 	void OnMoveTriggered(const FInputActionValue& InputActionValue);
+	void OnLookTriggered(const FInputActionValue& InputActionValue);
 
 private:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInputReceived);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveInputReceived, FVector2D, MovementInput);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLookInputReceived, FVector2D, LookInput);
 
 public:
 	FOnJumpInputReceived OnJumpInputReceived;
 	FOnMoveInputReceived OnMoveInputReceived;
+	FOnLookInputReceived OnLookInputReceived;
 };

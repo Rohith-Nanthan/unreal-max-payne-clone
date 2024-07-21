@@ -24,6 +24,8 @@ void UPlayerInputReaderComponent::SetupInputComponent(UInputComponent* Inputcomp
 	                                   &UPlayerInputReaderComponent::OnJumpTriggered);
 	EnhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this,
 	                                   &UPlayerInputReaderComponent::OnMoveTriggered);
+	EnhancedInputComponent->BindAction(LookInputAction, ETriggerEvent::Triggered, this,
+									   &UPlayerInputReaderComponent::OnLookTriggered);
 }
 
 void UPlayerInputReaderComponent::OnJumpTriggered()
@@ -46,4 +48,16 @@ void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& Input
 	}
 
 	OnMoveInputReceived.Broadcast(MoveInput);
+}
+
+void UPlayerInputReaderComponent::OnLookTriggered(const FInputActionValue& InputActionValue)
+{
+	const FVector2D LookInput = InputActionValue.Get<FVector2D>();
+	if (GEngine)
+	{
+		const FString MoveInputValue = FString::Printf(TEXT("Look x: %f, y %f"), LookInput.X, LookInput.Y);
+		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Green, MoveInputValue);
+	}
+
+	OnLookInputReceived.Broadcast(LookInput);
 }
