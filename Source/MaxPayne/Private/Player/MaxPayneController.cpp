@@ -3,7 +3,7 @@
 
 #include "Player/MaxPayneController.h"
 
-#include "PlayerCharacter.h"
+#include "MaxPayneCharacter.h"
 #include "PlayerInputReaderComponent.h"
 #include "PlayerMovementComponent.h"
 
@@ -30,7 +30,7 @@ void AMaxPayneController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (MaxPayneCharacter = Cast<APlayerCharacter>(InPawn))
+	if (MaxPayneCharacter = Cast<AMaxPayneCharacter>(InPawn))
 	{
 		if (PlayerMover = Cast<UPlayerMovementComponent>(MaxPayneCharacter->GetMovementComponent()))
 		{

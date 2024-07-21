@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "PlayerCharacter.generated.h"
+#include "MaxPayneCharacter.generated.h"
 
 class UCapsuleComponent;
 class UPlayerMovementComponent;
@@ -12,12 +12,12 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class APlayerCharacter : public APawn
+class AMaxPayneCharacter : public APawn
 {
 	GENERATED_BODY()
 
 public:
-	APlayerCharacter();
+	AMaxPayneCharacter();
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:

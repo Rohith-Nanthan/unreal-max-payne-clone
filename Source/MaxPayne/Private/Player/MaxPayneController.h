@@ -8,7 +8,7 @@
 
 class UPlayerInputReaderComponent;
 class UPlayerMovementComponent;
-class APlayerCharacter;
+class AMaxPayneCharacter;
 /**
  * 
  */
@@ -32,7 +32,7 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<APlayerCharacter> MaxPayneCharacter;
+	TObjectPtr<AMaxPayneCharacter> MaxPayneCharacter;
 
 	UPROPERTY()
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;

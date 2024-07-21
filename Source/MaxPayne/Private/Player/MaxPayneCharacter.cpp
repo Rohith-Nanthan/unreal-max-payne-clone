@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Player/PlayerCharacter.h"
+#include "Player/MaxPayneCharacter.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -9,7 +9,7 @@
 #include "PlayerMovementComponent.h"
 #include "Camera/CameraComponent.h"
 
-APlayerCharacter::APlayerCharacter()
+AMaxPayneCharacter::AMaxPayneCharacter()
 {
 	//Scene Components
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
@@ -27,24 +27,24 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AMaxPayneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Setting player input component from character"));
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void APlayerCharacter::BeginPlay()
+void AMaxPayneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	PrintController();
 }
 
-void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AMaxPayneCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 }
 
-void APlayerCharacter::PrintController()
+void AMaxPayneCharacter::PrintController()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Controller is: %s"), *GetController()->GetClass()->GetName());
 }
