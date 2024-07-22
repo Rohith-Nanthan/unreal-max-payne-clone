@@ -4,9 +4,11 @@
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-
-#include "PlayerMovementComponent.h"
 #include "Camera/CameraComponent.h"
+
+#include "Combat/HealthComponent.h"
+#include "PlayerMovementComponent.h"
+
 
 AMaxPayneCharacter::AMaxPayneCharacter()
 {
@@ -21,8 +23,22 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	//Actor components
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
 	PlayerMover = CreateDefaultSubobject<UPlayerMovementComponent>(TEXT("PlayerMover"));
 	PlayerMover->UpdatedComponent = CapsuleCollider;
 
 	PrimaryActorTick.bCanEverTick = false;
+}
+
+float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                                     AActor* DamageCauser)
+{
+	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(9, 1.f, FColor::Red,  FString::Printf(TEXT("Took damage %f"), ActualDamage));
+	}
+	HealthComponent->ReduceHealth(ActualDamage);
+	return ActualDamage;
 }

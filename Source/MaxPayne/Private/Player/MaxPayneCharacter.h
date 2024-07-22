@@ -10,7 +10,7 @@ class UCapsuleComponent;
 class UPlayerMovementComponent;
 class USpringArmComponent;
 class UCameraComponent;
-
+class UHealthComponent;
 UCLASS()
 class AMaxPayneCharacter : public APawn
 {
@@ -18,6 +18,9 @@ class AMaxPayneCharacter : public APawn
 
 public:
 	AMaxPayneCharacter();
+
+private:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -31,4 +34,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<UHealthComponent> HealthComponent;
 };
