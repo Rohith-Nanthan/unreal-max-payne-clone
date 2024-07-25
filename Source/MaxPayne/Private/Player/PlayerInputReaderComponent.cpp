@@ -26,16 +26,28 @@ void UPlayerInputReaderComponent::SetupInputComponent(UInputComponent* Inputcomp
 	                                   &UPlayerInputReaderComponent::OnMoveTriggered);
 	EnhancedInputComponent->BindAction(LookInputAction, ETriggerEvent::Triggered, this,
 									   &UPlayerInputReaderComponent::OnLookTriggered);
+	EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this,
+									   &UPlayerInputReaderComponent::OnShootTriggered);
 }
 
 void UPlayerInputReaderComponent::OnJumpTriggered()
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, TEXT("Jump Pressed"));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, TEXT("Jump Pressed"));
 	}
 
 	OnJumpInputReceived.Broadcast();
+}
+
+void UPlayerInputReaderComponent::OnShootTriggered()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, TEXT("Shoot Pressed"));
+	}
+
+	OnShootInputReceived.Broadcast();
 }
 
 void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& InputActionValue)
@@ -44,7 +56,7 @@ void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& Input
 	if (GEngine)
 	{
 		const FString MoveInputValue = FString::Printf(TEXT("Move x: %f, y %f"), MoveInput.X, MoveInput.Y);
-		GEngine->AddOnScreenDebugMessage(2, 1.f, FColor::Green, MoveInputValue);
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Green, MoveInputValue);
 	}
 
 	OnMoveInputReceived.Broadcast(MoveInput);
@@ -56,7 +68,7 @@ void UPlayerInputReaderComponent::OnLookTriggered(const FInputActionValue& Input
 	if (GEngine)
 	{
 		const FString MoveInputValue = FString::Printf(TEXT("Look x: %f, y %f"), LookInput.X, LookInput.Y);
-		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Green, MoveInputValue);
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Green, MoveInputValue);
 	}
 
 	OnLookInputReceived.Broadcast(LookInput);

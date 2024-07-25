@@ -37,7 +37,7 @@ float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(9, 1.f, FColor::Red,  FString::Printf(TEXT("Took damage %f"), ActualDamage));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red,  FString::Printf(TEXT("Took damage %f"), ActualDamage));
 	}
 	HealthComponent->ReduceHealth(ActualDamage);
 	return ActualDamage;

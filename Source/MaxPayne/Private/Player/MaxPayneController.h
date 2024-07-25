@@ -56,4 +56,7 @@ private:
 
 	UFUNCTION()
 	void OnLookInputReceived(FVector2D LookInput);
+
+	UFUNCTION()
+	void OnShootInputReceived();
 };

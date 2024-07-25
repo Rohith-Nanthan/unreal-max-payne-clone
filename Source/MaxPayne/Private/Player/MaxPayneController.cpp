@@ -41,6 +41,7 @@ void AMaxPayneController::OnPossess(APawn* InPawn)
 	PlayerInputReader->OnJumpInputReceived.AddDynamic(this, &AMaxPayneController::OnJumpInputReceived);
 	PlayerInputReader->OnMoveInputReceived.AddDynamic(this, &AMaxPayneController::OnMoveInputReceived);
 	PlayerInputReader->OnLookInputReceived.AddDynamic(this, &AMaxPayneController::OnLookInputReceived);
+	PlayerInputReader->OnShootInputReceived.AddDynamic(this, &AMaxPayneController::OnShootInputReceived);
 }
 
 void AMaxPayneController::OnUnPossess()
@@ -55,13 +56,14 @@ void AMaxPayneController::OnUnPossess()
 	PlayerInputReader->OnJumpInputReceived.RemoveDynamic(this, &AMaxPayneController::OnJumpInputReceived);
 	PlayerInputReader->OnMoveInputReceived.RemoveDynamic(this, &AMaxPayneController::OnMoveInputReceived);
 	PlayerInputReader->OnLookInputReceived.RemoveDynamic(this, &AMaxPayneController::OnLookInputReceived);
+	PlayerInputReader->OnShootInputReceived.RemoveDynamic(this, &AMaxPayneController::OnShootInputReceived);
 }
 
 void AMaxPayneController::OnJumpInputReceived()
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Yellow,TEXT("Jump input received"));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Yellow,TEXT("Jump input received"));
 	}
 
 	if (PlayerMover == nullptr)
@@ -78,7 +80,7 @@ void AMaxPayneController::OnMoveInputReceived(FVector2D MovementInput)
 	{
 		return;
 	}
-	
+
 	const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane() * MovementInput.X;
 	const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane() * MovementInput.Y;
 	const FVector MovementDirection = ForwardMovement + StrafeMovement;
@@ -89,9 +91,17 @@ void AMaxPayneController::OnLookInputReceived(FVector2D LookInput)
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(5, 1.f, FColor::Yellow,TEXT("Look input received"));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Yellow,TEXT("Look input received"));
 	}
 
 	AddPitchInput(LookInput.Y);
 	AddYawInput(LookInput.X);
+}
+
+void AMaxPayneController::OnShootInputReceived()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red,TEXT("Shoot input received"));
+	}
 }
