@@ -104,4 +104,9 @@ void AMaxPayneController::OnShootInputReceived()
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red,TEXT("Shoot input received"));
 	}
+
+	if (MaxPayneCharacter)
+	{
+		MaxPayneCharacter->Shoot();
+	}
 }

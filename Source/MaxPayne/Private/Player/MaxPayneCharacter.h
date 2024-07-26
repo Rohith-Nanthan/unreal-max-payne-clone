@@ -11,6 +11,8 @@ class UPlayerMovementComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UHealthComponent;
+class UWeaponShootComponent;
+
 UCLASS()
 class AMaxPayneCharacter : public APawn
 {
@@ -37,4 +39,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UHealthComponent> HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UWeaponShootComponent> WeaponShootComponent;
+
+public:
+	void Shoot();
 };

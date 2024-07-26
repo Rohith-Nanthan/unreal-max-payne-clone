@@ -8,6 +8,7 @@
 
 #include "Combat/HealthComponent.h"
 #include "PlayerMovementComponent.h"
+#include "Combat/WeaponShootComponent.h"
 
 
 AMaxPayneCharacter::AMaxPayneCharacter()
@@ -28,6 +29,8 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	PlayerMover = CreateDefaultSubobject<UPlayerMovementComponent>(TEXT("PlayerMover"));
 	PlayerMover->UpdatedComponent = CapsuleCollider;
 
+	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
+	WeaponShootComponent->Initialize(CameraComponent);
 	PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -37,8 +40,14 @@ float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red,  FString::Printf(TEXT("Took damage %f"), ActualDamage));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red,
+		                                 FString::Printf(TEXT("Took damage %f"), ActualDamage));
 	}
 	HealthComponent->ReduceHealth(ActualDamage);
 	return ActualDamage;
+}
+
+void AMaxPayneCharacter::Shoot()
+{
+	WeaponShootComponent->Shoot();
 }

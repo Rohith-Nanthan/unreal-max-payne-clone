@@ -15,8 +15,6 @@ class AEnemyCharacter : public APawn
 
 public:
 	AEnemyCharacter();
-
-private:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
