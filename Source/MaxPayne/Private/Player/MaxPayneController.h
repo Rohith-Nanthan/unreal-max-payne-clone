@@ -37,6 +37,10 @@ private:
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
 
 public:
+
+	UPROPERTY(VisibleAnywhere)
+	FVector CurrentMovementDirection;
+	
 	UPROPERTY(VisibleAnywhere)
 	FRotator LookRotator;
 

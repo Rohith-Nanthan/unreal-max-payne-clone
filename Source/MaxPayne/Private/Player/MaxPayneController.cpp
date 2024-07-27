@@ -81,14 +81,17 @@ void AMaxPayneController::UpdateMovementDirection()
 
 	if (MoveInput.Equals(FVector2d::ZeroVector))
 	{
-		PlayerMover->StopMoving();
+		const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane();
+		const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane();
+		CurrentMovementDirection = (ForwardMovement + StrafeMovement).GetSafeNormal();
+		PlayerMover->StopMoving(CurrentMovementDirection);
 	}
 	else
 	{
 		const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane() * MoveInput.Y;
 		const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane() * MoveInput.X;
-		const FVector MovementDirection = ForwardMovement + StrafeMovement;
-		PlayerMover->MoveAlongDirection(MovementDirection.GetSafeNormal());
+		CurrentMovementDirection = (ForwardMovement + StrafeMovement).GetSafeNormal();
+		PlayerMover->MoveAlongDirection(CurrentMovementDirection);
 	}
 }
 
@@ -102,7 +105,7 @@ void AMaxPayneController::RotateControllerForLook()
 		                                 FString::Printf(TEXT("Looking at %s."), *LookInput.ToString()));
 	}
 
-	LookRotator.Add(LookInput.Y,LookInput.X,0.f);
+	LookRotator.Add(LookInput.Y, LookInput.X, 0.f);
 	AddPitchInput(LookInput.Y);
 	AddYawInput(LookInput.X);
 }

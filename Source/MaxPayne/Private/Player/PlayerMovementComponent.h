@@ -77,5 +77,5 @@ public:
 	void StopJumping();
 
 	void MoveAlongDirection(FVector Direction);
-	void StopMoving();
+	void StopMoving(FVector Direction);
 };

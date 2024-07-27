@@ -116,7 +116,8 @@ void UPlayerMovementComponent::MoveAlongDirection(FVector Direction)
 	}
 }
 
-void UPlayerMovementComponent::StopMoving()
+void UPlayerMovementComponent::StopMoving(FVector Direction)
 {
+	MovementDirection=Direction;
 	bIsReceivingMovementInput = false;
 }
