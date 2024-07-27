@@ -27,7 +27,16 @@ void UPlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 	Delta += GetWalkDelta(DeltaTime);
 
-	SafeMoveUpdatedComponent(Delta, FQuat::Identity, true, LastMovementHitResult);
+	const bool IsMovementSuccessful = SafeMoveUpdatedComponent(Delta, FQuat::Identity, true, LastMovementHitResult);
+	if (IsMovementSuccessful)
+	{
+		Velocity = Delta;
+	}
+	else
+	{
+		Velocity = FVector::ZeroVector;
+	}
+	UpdateComponentVelocity();
 }
 
 FVector UPlayerMovementComponent::GetJumpDelta(float DeltaTime)
