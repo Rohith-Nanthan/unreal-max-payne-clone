@@ -8,7 +8,7 @@
 
 class UInputMappingContext;
 class UInputAction;
-struct FInputActionValue;
+struct FEnhancedInputActionValueBinding;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class UPlayerInputReaderComponent : public UActorComponent
@@ -20,8 +20,14 @@ public:
 	void SetupInputComponent(UInputComponent* Inputcomponent, APlayerController* PlayerController);
 
 private:
+	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+private:
 	UPROPERTY()
 	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+
+	FEnhancedInputActionValueBinding* MoveInputBinding;
+	FEnhancedInputActionValueBinding* LookInputBinding;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -39,23 +45,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UInputAction> ShootInputAction;
 
+public:
+	FVector2d MoveInputVector;
+	FVector2d LookInputVector;
+
 private:
 	void OnJumpTriggered();
-	void OnMoveTriggered(const FInputActionValue& InputActionValue);
-	void OnLookTriggered(const FInputActionValue& InputActionValue);
 	void OnShootTriggered();
 
 private:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInputReceived);
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveInputReceived, FVector2D, MovementInput);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLookInputReceived, FVector2D, LookInput);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInputStateChange);
 	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShootInputRecieved);
-
 public:
-	FOnJumpInputReceived OnJumpInputReceived;
-	FOnMoveInputReceived OnMoveInputReceived;
-	FOnLookInputReceived OnLookInputReceived;
-	FOnShootInputRecieved OnShootInputReceived;
+	FOnInputStateChange OnJumpInputReceived;	
+	FOnInputStateChange OnShootInputReceived;
 };

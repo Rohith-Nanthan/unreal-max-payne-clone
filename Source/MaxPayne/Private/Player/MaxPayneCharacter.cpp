@@ -31,7 +31,7 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 
 	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
 	WeaponShootComponent->Initialize(CameraComponent);
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -50,4 +50,19 @@ float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 void AMaxPayneCharacter::Shoot()
 {
 	WeaponShootComponent->Shoot();
+}
+
+
+void AMaxPayneCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (MaxPayneController)
+	{
+		SpringArmComponent->SetRelativeRotation(MaxPayneController->LookRotator);
+	}
+	else
+	{
+		MaxPayneController = Cast<AMaxPayneController>(GetController());
+	}
 }

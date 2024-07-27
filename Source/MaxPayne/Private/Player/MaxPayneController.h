@@ -18,6 +18,8 @@ class AMaxPayneController : public APlayerController
 public:
 	explicit AMaxPayneController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual void Tick(float DeltaSeconds) override;
+
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
@@ -35,9 +37,13 @@ private:
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
 
 public:
+	UPROPERTY(VisibleAnywhere)
+	FRotator LookRotator;
+
+public:
 	FORCEINLINE FVector GetForwardVectorProjectedAlong_XY_Plane() const
 	{
-		const FVector ControllerForwardDirection = GetControlRotation().Vector();
+		const FVector ControllerForwardDirection = LookRotator.Vector();
 		return FVector::VectorPlaneProject(
 			ControllerForwardDirection, FVector::UpVector);
 	}
@@ -49,13 +55,13 @@ public:
 
 private:
 	UFUNCTION()
+	void UpdateMovementDirection();
+
+	UFUNCTION()
+	void RotateControllerForLook();
+
+	UFUNCTION()
 	void OnJumpInputReceived();
-
-	UFUNCTION()
-	void OnMoveInputReceived(FVector2D MovementInput);
-
-	UFUNCTION()
-	void OnLookInputReceived(FVector2D LookInput);
 
 	UFUNCTION()
 	void OnShootInputReceived();

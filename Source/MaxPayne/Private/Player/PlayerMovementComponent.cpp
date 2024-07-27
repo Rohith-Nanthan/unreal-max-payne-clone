@@ -28,14 +28,7 @@ void UPlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	Delta += GetWalkDelta(DeltaTime);
 
 	const bool IsMovementSuccessful = SafeMoveUpdatedComponent(Delta, FQuat::Identity, true, LastMovementHitResult);
-	if (IsMovementSuccessful)
-	{
-		Velocity = Delta;
-	}
-	else
-	{
-		Velocity = FVector::ZeroVector;
-	}
+	Velocity = Delta;
 	UpdateComponentVelocity();
 }
 
@@ -58,7 +51,27 @@ FVector UPlayerMovementComponent::GetFallDownDelta(float DeltaTime)
 
 FVector UPlayerMovementComponent::GetWalkDelta(float DeltaTime)
 {
-	return ConsumeInputVector() * WalkingSpeed * DeltaTime;
+	if (!bIsMoving)
+	{
+		return FVector::ZeroVector;
+	}
+
+	if (bIsReceivingMovementInput)
+	{
+		CurrentMovingSpeed += MoveDeAccleration * DeltaTime;
+	}
+	else
+	{
+		CurrentMovingSpeed -= MoveAccleration * DeltaTime;
+	}
+
+	CurrentMovingSpeed = FMath::Clamp(CurrentMovingSpeed, 0.f, MaxMoveSpeed);
+	if (CurrentMovingSpeed == 0.f)
+	{
+		bIsMoving = false;
+	}
+
+	return MovementDirection * CurrentMovingSpeed * DeltaTime;
 }
 
 bool UPlayerMovementComponent::IsOnGround()
@@ -73,6 +86,7 @@ bool UPlayerMovementComponent::IsOnGround()
 	                                                                        GroundDetectionCapsuleHeight),
 	                                           FCollisionQueryParams(FName(), false, GetOwner()));
 }
+
 
 void UPlayerMovementComponent::StartJumping()
 {
@@ -93,5 +107,16 @@ void UPlayerMovementComponent::StopJumping()
 
 void UPlayerMovementComponent::MoveAlongDirection(FVector Direction)
 {
-	AddInputVector(Direction.GetSafeNormal());
+	MovementDirection = Direction;
+	bIsReceivingMovementInput = true;
+	if (!bIsMoving)
+	{
+		CurrentMovingSpeed = StartingMoveSpeed;
+		bIsMoving = true;
+	}
+}
+
+void UPlayerMovementComponent::StopMoving()
+{
+	bIsReceivingMovementInput = false;
 }
