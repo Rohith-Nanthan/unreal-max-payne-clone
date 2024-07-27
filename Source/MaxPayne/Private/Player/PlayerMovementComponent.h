@@ -76,6 +76,5 @@ public:
 	void StartJumping();
 	void StopJumping();
 
-	void MoveAlongDirection(FVector Direction);
-	void StopMoving(FVector Direction);
+	void UpdateMovementData(FVector NewMovementDirection, bool bIsMoveInputreceived);
 };

@@ -105,19 +105,17 @@ void UPlayerMovementComponent::StopJumping()
 	ElapsedJumpDuration = 0.f;
 }
 
-void UPlayerMovementComponent::MoveAlongDirection(FVector Direction)
+void UPlayerMovementComponent::UpdateMovementData(FVector NewMovementDirection, bool bIsMoveInputreceived)
 {
-	MovementDirection = Direction;
-	bIsReceivingMovementInput = true;
-	if (!bIsMoving)
-	{
-		CurrentMovingSpeed = StartingMoveSpeed;
-		bIsMoving = true;
-	}
-}
+	MovementDirection = NewMovementDirection;
+	bIsReceivingMovementInput = bIsMoveInputreceived;
 
-void UPlayerMovementComponent::StopMoving(FVector Direction)
-{
-	MovementDirection=Direction;
-	bIsReceivingMovementInput = false;
+	if (bIsReceivingMovementInput)
+	{
+		if (!bIsMoving)
+		{
+			CurrentMovingSpeed = StartingMoveSpeed;
+			bIsMoving = true;
+		}
+	}
 }

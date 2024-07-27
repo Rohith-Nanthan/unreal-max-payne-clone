@@ -17,32 +17,12 @@ class AMaxPayneController : public APlayerController
 
 public:
 	explicit AMaxPayneController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
-
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UPlayerInputReaderComponent> PlayerInputReader;
-
-private:
-	UPROPERTY()
-	TObjectPtr<AMaxPayneCharacter> MaxPayneCharacter;
-
-	UPROPERTY()
-	TObjectPtr<UPlayerMovementComponent> PlayerMover;
-
-public:
-
-	UPROPERTY(VisibleAnywhere)
-	FVector CurrentMovementDirection;
-	
-	UPROPERTY(VisibleAnywhere)
-	FRotator LookRotator;
 
 public:
 	FORCEINLINE FVector GetForwardVectorProjectedAlong_XY_Plane() const
@@ -69,4 +49,22 @@ private:
 
 	UFUNCTION()
 	void OnShootInputReceived();
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UPlayerInputReaderComponent> PlayerInputReader;
+
+private:
+	UPROPERTY()
+	TObjectPtr<AMaxPayneCharacter> MaxPayneCharacter;
+
+	UPROPERTY()
+	TObjectPtr<UPlayerMovementComponent> PlayerMover;
+
+	UPROPERTY()
+	FVector2D LastMovementDirection;
+
+public:
+	UPROPERTY(VisibleAnywhere)
+	FRotator LookRotator;
 };

@@ -72,32 +72,28 @@ void AMaxPayneController::OnUnPossess()
 
 void AMaxPayneController::UpdateMovementDirection()
 {
-	const FVector2d MoveInput = PlayerInputReader->MoveInputVector;
+	const FVector2D MoveInput = PlayerInputReader->MoveInputVector;
 
 	if (PlayerMover == nullptr)
 	{
 		return;
 	}
 
-	if (MoveInput.Equals(FVector2d::ZeroVector))
+	const bool bIsMoveInputReceived = !MoveInput.Equals(FVector2D::ZeroVector);
+	if (bIsMoveInputReceived)
 	{
-		const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane();
-		const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane();
-		CurrentMovementDirection = (ForwardMovement + StrafeMovement).GetSafeNormal();
-		PlayerMover->StopMoving(CurrentMovementDirection);
+		LastMovementDirection = MoveInput;
 	}
-	else
-	{
-		const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane() * MoveInput.Y;
-		const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane() * MoveInput.X;
-		CurrentMovementDirection = (ForwardMovement + StrafeMovement).GetSafeNormal();
-		PlayerMover->MoveAlongDirection(CurrentMovementDirection);
-	}
+
+	const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane() * LastMovementDirection.Y;
+	const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane() * LastMovementDirection.X;
+	const FVector CameraBasedMovementDirection = (ForwardMovement + StrafeMovement).GetSafeNormal();
+	PlayerMover->UpdateMovementData(CameraBasedMovementDirection, bIsMoveInputReceived);
 }
 
 void AMaxPayneController::RotateControllerForLook()
 {
-	const FVector2d LookInput = PlayerInputReader->LookInputVector;
+	const FVector2D LookInput = PlayerInputReader->LookInputVector;
 
 	if (GEngine)
 	{

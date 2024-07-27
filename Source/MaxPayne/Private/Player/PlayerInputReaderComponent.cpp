@@ -38,7 +38,7 @@ void UPlayerInputReaderComponent::TickComponent(float DeltaTime, ELevelTick Tick
                                                 FActorComponentTickFunction* ThisTickFunction)
 {
 	MoveInputVector = MoveInputBinding->GetValue().Get<FVector2D>();
-	LookInputVector = LookInputBinding->GetValue().Get<FVector2d>();
+	LookInputVector = LookInputBinding->GetValue().Get<FVector2D>();
 
 	if (GEngine)
 	{
