@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "MaxPayneCameraMover.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+class AMaxPayneController;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UMaxPayneCameraMover : public UActorComponent
@@ -13,16 +16,20 @@ class UMaxPayneCameraMover : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UMaxPayneCameraMover();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
 public:	
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	void Initialize(USpringArmComponent* SpringArmComponentToSet, UCameraComponent* CameraComponentToSet, AMaxPayneController* MaxPayneControllerToSet);
+
+private:
+	UPROPERTY()
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY()
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY()
+	TObjectPtr<AMaxPayneController> MaxPayneController;
 };

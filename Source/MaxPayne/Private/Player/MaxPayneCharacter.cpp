@@ -2,6 +2,8 @@
 
 #include "Player/MaxPayneCharacter.h"
 
+#include "MaxPayneCameraMover.h"
+#include "MaxPayneController.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -18,10 +20,11 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComponent->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
-	SpringArmComponent->bUsePawnControlRotation = true;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	MaxPayneCameraMover = CreateDefaultSubobject<UMaxPayneCameraMover>(TEXT("CameraMover"));
 
 	//Actor components
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -31,7 +34,7 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 
 	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
 	WeaponShootComponent->Initialize(CameraComponent);
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -47,22 +50,13 @@ float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	return ActualDamage;
 }
 
+void AMaxPayneCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, Cast<AMaxPayneController>(NewController));
+}
+
 void AMaxPayneCharacter::Shoot()
 {
 	WeaponShootComponent->Shoot();
-}
-
-
-void AMaxPayneCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	if (MaxPayneController)
-	{
-		SpringArmComponent->SetRelativeRotation(MaxPayneController->LookRotator);
-	}
-	else
-	{
-		MaxPayneController = Cast<AMaxPayneController>(GetController());
-	}
 }

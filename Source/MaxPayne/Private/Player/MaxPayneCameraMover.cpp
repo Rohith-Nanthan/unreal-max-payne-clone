@@ -3,32 +3,33 @@
 
 #include "Player/MaxPayneCameraMover.h"
 
-// Sets default values for this component's properties
+#include "MaxPayneController.h"
+#include "GameFramework/SpringArmComponent.h"
+
 UMaxPayneCameraMover::UMaxPayneCameraMover()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
-
-// Called when the game starts
-void UMaxPayneCameraMover::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UMaxPayneCameraMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UMaxPayneCameraMover::TickComponent(float DeltaTime, ELevelTick TickType,
+                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	if (MaxPayneController && SpringArmComponent)
+	{
+		SpringArmComponent->SetWorldRotation(MaxPayneController->LookRotator);
+	}
 }
 
+void UMaxPayneCameraMover::Initialize(USpringArmComponent* SpringArmComponentToSet,
+                                      UCameraComponent* CameraComponentToSet,
+                                      AMaxPayneController* MaxPayneControllerToSet)
+{
+	SpringArmComponent = SpringArmComponentToSet;
+	CameraComponent = CameraComponentToSet;
+	MaxPayneController = MaxPayneControllerToSet;
+	if (!MaxPayneController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Controller is not AMaxPayneController"));
+	}
+}

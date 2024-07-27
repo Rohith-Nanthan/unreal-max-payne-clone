@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MaxPayneController.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MaxPayneCharacter.generated.h"
@@ -14,7 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UHealthComponent;
 class UWeaponShootComponent;
-class AMaxPayneController;
+class UMaxPayneCameraMover;
 
 UCLASS()
 class AMaxPayneCharacter : public APawn
@@ -26,7 +25,7 @@ public:
 
 private:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void PossessedBy(AController* NewController) override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -48,7 +47,7 @@ protected:
 	TObjectPtr<UWeaponShootComponent> WeaponShootComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<AMaxPayneController> MaxPayneController;
+	TObjectPtr<UMaxPayneCameraMover> MaxPayneCameraMover;
 
 public:
 	void Shoot();
