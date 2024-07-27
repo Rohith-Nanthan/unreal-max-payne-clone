@@ -91,7 +91,7 @@ void AMaxPayneController::OnLookInputReceived(FVector2D LookInput)
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Yellow,TEXT("Look input received"));
+		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Yellow,TEXT("Look input received"));
 	}
 
 	AddPitchInput(LookInput.Y);

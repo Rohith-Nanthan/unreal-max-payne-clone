@@ -56,7 +56,7 @@ void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& Input
 	if (GEngine)
 	{
 		const FString MoveInputValue = FString::Printf(TEXT("Move x: %f, y %f"), MoveInput.X, MoveInput.Y);
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Green, MoveInputValue);
+		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Green, MoveInputValue);
 	}
 
 	OnMoveInputReceived.Broadcast(MoveInput);
@@ -68,7 +68,7 @@ void UPlayerInputReaderComponent::OnLookTriggered(const FInputActionValue& Input
 	if (GEngine)
 	{
 		const FString MoveInputValue = FString::Printf(TEXT("Look x: %f, y %f"), LookInput.X, LookInput.Y);
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Green, MoveInputValue);
+		GEngine->AddOnScreenDebugMessage(2, 1.f, FColor::Green, MoveInputValue);
 	}
 
 	OnLookInputReceived.Broadcast(LookInput);
