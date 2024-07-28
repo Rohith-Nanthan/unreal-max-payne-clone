@@ -14,6 +14,7 @@ class UCameraComponent;
 class UHealthComponent;
 class UWeaponShootComponent;
 class UMaxPayneCameraMover;
+class UMaxPayneAnimationHandler;
 
 UCLASS()
 class AMaxPayneCharacter : public APawn
@@ -48,6 +49,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMaxPayneCameraMover> MaxPayneCameraMover;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMaxPayneAnimationHandler> MaxPayneAnimationHandler;
 
 public:
 	void Shoot();

@@ -2,6 +2,7 @@
 
 #include "Player/MaxPayneCharacter.h"
 
+#include "MaxPayneAnimationHandler.h"
 #include "MaxPayneCameraMover.h"
 #include "MaxPayneController.h"
 #include "Components/CapsuleComponent.h"
@@ -34,6 +35,8 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 
 	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
 	WeaponShootComponent->Initialize(CameraComponent);
+
+	MaxPayneAnimationHandler = CreateDefaultSubobject<UMaxPayneAnimationHandler>(TEXT("AnimationHandler"));
 	PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -53,7 +56,10 @@ float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 void AMaxPayneCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, Cast<AMaxPayneController>(NewController));
+
+	AMaxPayneController* MaxPayneController = Cast<AMaxPayneController>(NewController);
+	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
+	MaxPayneAnimationHandler->Initialize(CapsuleCollider, MaxPayneController);
 }
 
 void AMaxPayneCharacter::Shoot()
