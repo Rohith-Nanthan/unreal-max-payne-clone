@@ -7,6 +7,7 @@
 #include "MaxPayneAnimationHandler.generated.h"
 
 class AMaxPayneController;
+class UPlayerMovementComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UMaxPayneAnimationHandler : public UActorComponent
@@ -20,12 +21,23 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void Initialize(USceneComponent* CharacterArtRoot, AMaxPayneController* MaxPayneController);
+	void Initialize(AMaxPayneController* MaxPayneController, USceneComponent* CharacterArtRoot,
+	                USkeletalMeshComponent* CharacterMesh, UPlayerMovementComponent* PlayerMovementComponent);
 
 private:
+	UPROPERTY()
+	TObjectPtr<AMaxPayneController> Controller;
+
 	UPROPERTY()
 	TObjectPtr<USceneComponent> ArtRoot;
 
 	UPROPERTY()
-	TObjectPtr<AMaxPayneController> Controller;
+	TObjectPtr<USkeletalMeshComponent> Mesh;
+
+	UPROPERTY()
+	TObjectPtr<UPlayerMovementComponent> MovementComponent;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UBlendSpace> MovementAnimationBlendSpace;
 };

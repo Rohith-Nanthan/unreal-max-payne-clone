@@ -77,4 +77,8 @@ public:
 	void StopJumping();
 
 	void UpdateMovementData(FVector NewMovementDirection, bool bIsMoveInputreceived);
+	float GetCurrentMovementSpeed()const
+	{
+		return CurrentMovingSpeed;
+	}
 };

@@ -18,6 +18,10 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 {
 	//Scene Components
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
+	SetRootComponent(CapsuleCollider);
+
+	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
+	CharacterMesh->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComponent->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
@@ -58,8 +62,9 @@ void AMaxPayneCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	AMaxPayneController* MaxPayneController = Cast<AMaxPayneController>(NewController);
+
 	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
-	MaxPayneAnimationHandler->Initialize(CapsuleCollider, MaxPayneController);
+	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, CharacterMesh, PlayerMover);
 }
 
 void AMaxPayneCharacter::Shoot()

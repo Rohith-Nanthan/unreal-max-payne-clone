@@ -61,10 +61,11 @@ private:
 	UPROPERTY()
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
 
-	UPROPERTY()
-	FVector2D LastMovementDirection;
 
 public:
+	UPROPERTY(VisibleAnywhere)
+	FVector2D LastMovementDirection;
+	
 	UPROPERTY(VisibleAnywhere)
 	FRotator LookRotator;
 };
