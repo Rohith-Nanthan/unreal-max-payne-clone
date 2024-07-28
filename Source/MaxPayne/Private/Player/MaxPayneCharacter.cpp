@@ -38,7 +38,7 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	PlayerMover->UpdatedComponent = CapsuleCollider;
 
 	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
-	WeaponShootComponent->Initialize(CameraComponent);
+	WeaponShootComponent->Initialize(CameraComponent, MaxPayneCameraMover);
 
 	MaxPayneAnimationHandler = CreateDefaultSubobject<UMaxPayneAnimationHandler>(TEXT("AnimationHandler"));
 	PrimaryActorTick.bCanEverTick = false;

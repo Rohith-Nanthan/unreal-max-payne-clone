@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "WeaponShootComponent.generated.h"
 
+class UMaxPayneCameraMover;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UWeaponShootComponent : public UActorComponent
@@ -14,8 +15,9 @@ class UWeaponShootComponent : public UActorComponent
 
 public:
 	UWeaponShootComponent();
-
-	void Initialize(USceneComponent* HitTraceStartPointToSet);
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
+	void Initialize(USceneComponent* HitTraceStartPointToSet, UMaxPayneCameraMover* CameraMoverComponent);
 	void Shoot();
 
 protected:
@@ -27,4 +29,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int DamageAmount = 1;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UMaxPayneCameraMover> CameraMover;
+
+	UPROPERTY(EditAnywhere)
+	float ShootCameraFocusDuration;
+
+	float ElapsedCameraFocusTime;
+	bool bIsCameraFocusing;
 };
