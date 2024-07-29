@@ -9,6 +9,10 @@
 
 UMaxPayneCameraMover::UMaxPayneCameraMover()
 {
+	NoShootCameraOffset = FVector(0.f, 50.f, 0.f);
+	NormalShootCameraOffset = FVector(10.f, 100.f, 0.f);
+	ADS_ShootCameraOffset = FVector(30.f, 100.f, 0.f);
+
 	CurrentCameraFocusMode = ECFM_NoShoot;
 	PrimaryComponentTick.bCanEverTick = true;
 }
