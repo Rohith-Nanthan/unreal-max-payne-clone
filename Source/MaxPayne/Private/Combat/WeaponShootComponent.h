@@ -29,14 +29,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int DamageAmount = 1;
-
-private:
-	UPROPERTY()
-	TObjectPtr<UMaxPayneCameraMover> CameraMover;
-
-	UPROPERTY(EditAnywhere)
-	float ShootCameraFocusDuration;
-
-	float ElapsedCameraFocusTime;
-	bool bIsCameraFocusing;
 };

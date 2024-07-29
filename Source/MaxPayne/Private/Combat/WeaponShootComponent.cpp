@@ -16,27 +16,12 @@ void UWeaponShootComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                           FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (bIsCameraFocusing)
-	{
-		ElapsedCameraFocusTime += DeltaTime;
-		if (ElapsedCameraFocusTime > ShootCameraFocusDuration)
-		{
-			bIsCameraFocusing = false;
-
-			if(CameraMover)
-			{
-				CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NoShoot);
-			}
-		}
-	}
 }
 
 void UWeaponShootComponent::Initialize(USceneComponent* HitTraceStartPointToSet,
                                        UMaxPayneCameraMover* CameraMoverComponent)
 {
 	HitTraceStartPoint = HitTraceStartPointToSet;
-	CameraMover = CameraMoverComponent;
 }
 
 void UWeaponShootComponent::Shoot()
@@ -68,15 +53,5 @@ void UWeaponShootComponent::Shoot()
 			EnemyCharacter->TakeDamage(DamageAmount, FPointDamageEvent(), GetOwner()->GetInstigatorController(),
 			                           GetOwner());
 		}
-	}
-
-	if (!bIsCameraFocusing)
-	{
-		if (CameraMover)
-		{
-			CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NormalShoot);
-		}
-		bIsCameraFocusing = true;
-		ElapsedCameraFocusTime = 0;
 	}
 }

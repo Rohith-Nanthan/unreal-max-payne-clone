@@ -29,6 +29,7 @@ void UPlayerInputReaderComponent::SetupInputComponent(UInputComponent* Inputcomp
 
 	MoveInputBinding = &EnhancedInputComponent->BindActionValue(MoveInputAction);
 	LookInputBinding = &EnhancedInputComponent->BindActionValue(LookInputAction);
+	AimInputBinding = &EnhancedInputComponent->BindActionValue(AimInputAction);
 
 	EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this,
 	                                   &UPlayerInputReaderComponent::OnShootTriggered);
@@ -39,6 +40,7 @@ void UPlayerInputReaderComponent::TickComponent(float DeltaTime, ELevelTick Tick
 {
 	MoveInputVector = MoveInputBinding->GetValue().Get<FVector2D>();
 	LookInputVector = LookInputBinding->GetValue().Get<FVector2D>();
+	bIsAiming = AimInputBinding->GetValue().Get<bool>();
 
 	if (GEngine)
 	{

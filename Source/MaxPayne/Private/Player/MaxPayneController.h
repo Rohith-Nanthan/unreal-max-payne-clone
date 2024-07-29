@@ -65,7 +65,12 @@ private:
 public:
 	UPROPERTY(VisibleAnywhere)
 	FVector2D LastMovementDirection;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	FRotator LookRotator;
+
+	UPlayerInputReaderComponent* GetInputReader() const
+	{
+		return  PlayerInputReader;
+	}
 };

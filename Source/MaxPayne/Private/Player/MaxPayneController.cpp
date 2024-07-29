@@ -25,7 +25,7 @@ void AMaxPayneController::Tick(float DeltaSeconds)
 
 	RotateControllerForLook();
 	UpdateMovementDirection();
-
+	
 	Super::Tick(DeltaSeconds);
 }
 

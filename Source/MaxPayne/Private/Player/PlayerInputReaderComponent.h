@@ -28,6 +28,7 @@ private:
 
 	FEnhancedInputActionValueBinding* MoveInputBinding;
 	FEnhancedInputActionValueBinding* LookInputBinding;
+	FEnhancedInputActionValueBinding* AimInputBinding;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -43,11 +44,15 @@ protected:
 	TObjectPtr<UInputAction> MoveInputAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UInputAction> AimInputAction;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UInputAction> ShootInputAction;
 
 public:
 	FVector2d MoveInputVector;
 	FVector2d LookInputVector;
+	bool bIsAiming;
 
 private:
 	void OnJumpTriggered();

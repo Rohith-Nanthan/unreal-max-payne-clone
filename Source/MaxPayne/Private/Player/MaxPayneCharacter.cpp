@@ -5,6 +5,7 @@
 #include "MaxPayneAnimationHandler.h"
 #include "MaxPayneCameraMover.h"
 #include "MaxPayneController.h"
+#include "PlayerCombatHandler.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -40,6 +41,8 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
 	WeaponShootComponent->Initialize(CameraComponent, MaxPayneCameraMover);
 
+	CombatHandler = CreateDefaultSubobject<UPlayerCombatHandler>(TEXT("CombatHandler"));
+
 	MaxPayneAnimationHandler = CreateDefaultSubobject<UMaxPayneAnimationHandler>(TEXT("AnimationHandler"));
 	PrimaryActorTick.bCanEverTick = false;
 }
@@ -65,9 +68,10 @@ void AMaxPayneCharacter::PossessedBy(AController* NewController)
 
 	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
 	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, CharacterMesh, PlayerMover);
+	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover, WeaponShootComponent);
 }
 
 void AMaxPayneCharacter::Shoot()
 {
-	WeaponShootComponent->Shoot();
+	CombatHandler->Shoot();
 }

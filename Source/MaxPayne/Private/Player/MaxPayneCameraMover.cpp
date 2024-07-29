@@ -40,6 +40,11 @@ void UMaxPayneCameraMover::Initialize(USpringArmComponent* SpringArmComponentToS
 	{
 		UE_LOG(LogTemp, Error, TEXT("Controller is not AMaxPayneController"));
 	}
+
+	if (CameraComponent)
+	{
+		CameraComponent->SetRelativeLocation(NoShootCameraOffset);
+	}
 }
 
 void UMaxPayneCameraMover::SwitchCameraFocusMode(ECameraFocusMode NewFocusMode)
