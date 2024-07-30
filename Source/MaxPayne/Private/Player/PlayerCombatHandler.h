@@ -16,22 +16,18 @@ class UPlayerCombatHandler : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UPlayerCombatHandler();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void Initialize(UPlayerInputReaderComponent* InputReader, UMaxPayneCameraMover* CameraMover,
 	                UWeaponShootComponent* WeaponShootComponent);
 	void Shoot();
-	
+
+private:
+	void HandleCameraFocusingForNormalShoot(float DeltaTime);
+	void HandleCameraFocusForADS();
+
 private:
 	UPROPERTY()
 	TObjectPtr<UMaxPayneCameraMover> CameraMover;
@@ -43,11 +39,11 @@ private:
 	TObjectPtr<UWeaponShootComponent> WeaponShoot;
 
 	UPROPERTY(EditAnywhere)
-	float ShootCameraFocusDuration;
+	float ShootCameraFocusDuration = 3.f;
 
 	float ElapsedCameraFocusTime;
 	bool bIsCameraFocusingForNormalShoot;
 	bool bIsCameraAiming;
-	
+
 	void CheckAndFocusCameraForShoot();
 };

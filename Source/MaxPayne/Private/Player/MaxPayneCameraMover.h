@@ -38,6 +38,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float CameraLerpSpeedForFocusChange = 2.f;
 
+	UPROPERTY(EditAnywhere)
+	float CameraLerpEaseSpeedExponential = 1.f;
+
 	UPROPERTY(VisibleAnywhere)
 	bool bIsUpdatingCameraPosition;
 	

@@ -97,6 +97,7 @@ void UMaxPayneCameraMover::UpdateCameraPositionForFocusMode(float DeltaTime)
 	}
 
 	LerpProgress += DeltaTime * CameraLerpSpeedForFocusChange;
-	FVector DeltaCameraPosition = FMath::LerpStable(StartingCameraPosition, DesiredCameraPosition, LerpProgress);
+	const FVector DeltaCameraPosition = FMath::InterpEaseOut(StartingCameraPosition, DesiredCameraPosition, LerpProgress,
+	                                                        CameraLerpEaseSpeedExponential);
 	CameraComponent->SetRelativeLocation(DeltaCameraPosition);
 }

@@ -7,25 +7,52 @@
 #include "PlayerInputReaderComponent.h"
 #include "Combat/WeaponShootComponent.h"
 
-// Sets default values for this component's properties
 UPlayerCombatHandler::UPlayerCombatHandler()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
-
-// Called when the game starts
-void UPlayerCombatHandler::BeginPlay()
+void UPlayerCombatHandler::HandleCameraFocusingForNormalShoot(float DeltaTime)
 {
-	Super::BeginPlay();
+	if (!bIsCameraFocusingForNormalShoot)
+	{
+		return;
+	}
 
-	// ...
+	ElapsedCameraFocusTime += DeltaTime;
+	if (ElapsedCameraFocusTime > ShootCameraFocusDuration)
+	{
+		bIsCameraFocusingForNormalShoot = false;
+
+		if (CameraMover)
+		{
+			CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NoShoot);
+		}
+	}
 }
 
+void UPlayerCombatHandler::HandleCameraFocusForADS()
+{
+	if (!InputReader)
+	{
+		return;
+	}
+
+	const bool bIsCameraAimingNow = InputReader->bIsAiming;
+	if (!bIsCameraAiming && bIsCameraAimingNow)
+	{
+		bIsCameraAiming = true;
+		if (CameraMover)
+		{
+			CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_ADS_Shoot);
+		}
+	}
+	else if (bIsCameraAiming && !bIsCameraAimingNow)
+	{
+		bIsCameraAiming = false;
+		CheckAndFocusCameraForShoot();
+	}
+}
 
 // Called every frame
 void UPlayerCombatHandler::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -33,37 +60,8 @@ void UPlayerCombatHandler::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	bool bIsCameraAimingNow = InputReader->bIsAiming;
-	if (InputReader)
-	{
-		if (!bIsCameraAiming && bIsCameraAimingNow)
-		{
-			bIsCameraAiming = true;
-			if (CameraMover)
-			{
-				CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_ADS_Shoot);
-			}
-		}
-		else if (bIsCameraAiming && !bIsCameraAimingNow)
-		{
-			bIsCameraAiming = false;
-			CheckAndFocusCameraForShoot();
-		}
-	}
-
-	if (bIsCameraFocusingForNormalShoot)
-	{
-		ElapsedCameraFocusTime += DeltaTime;
-		if (ElapsedCameraFocusTime > ShootCameraFocusDuration)
-		{
-			bIsCameraFocusingForNormalShoot = false;
-
-			if (CameraMover)
-			{
-				CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NoShoot);
-			}
-		}
-	}
+	HandleCameraFocusForADS();
+	HandleCameraFocusingForNormalShoot(DeltaTime);
 }
 
 void UPlayerCombatHandler::Initialize(UPlayerInputReaderComponent* InputReaderComponent,
@@ -77,15 +75,23 @@ void UPlayerCombatHandler::Initialize(UPlayerInputReaderComponent* InputReaderCo
 
 void UPlayerCombatHandler::CheckAndFocusCameraForShoot()
 {
-	if (!bIsCameraAiming && !bIsCameraFocusingForNormalShoot)
+	if (bIsCameraAiming)
 	{
-		if (CameraMover)
-		{
-			CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NormalShoot);
-		}
-		bIsCameraFocusingForNormalShoot = true;
-		ElapsedCameraFocusTime = 0;
+		return;
 	}
+
+	if (bIsCameraFocusingForNormalShoot)
+	{
+		ElapsedCameraFocusTime = 0;
+		return;
+	}
+
+	if (CameraMover)
+	{
+		CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NormalShoot);
+	}
+	bIsCameraFocusingForNormalShoot = true;
+	ElapsedCameraFocusTime = 0;
 }
 
 void UPlayerCombatHandler::Shoot()
