@@ -80,7 +80,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FCameraOffsetData ADS_ShootCameraOffset =
 	{
-		FVector(30.f, 100.f, 0.f),
+		FVector(80.f, 50.f, 0.f),
 		5.f,
 		3.f
 	};
