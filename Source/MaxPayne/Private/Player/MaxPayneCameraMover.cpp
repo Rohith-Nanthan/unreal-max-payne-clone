@@ -9,10 +9,6 @@
 
 UMaxPayneCameraMover::UMaxPayneCameraMover()
 {
-	NoShootCameraOffset = FVector(0.f, 50.f, 0.f);
-	NormalShootCameraOffset = FVector(10.f, 100.f, 0.f);
-	ADS_ShootCameraOffset = FVector(30.f, 100.f, 0.f);
-
 	CurrentCameraFocusMode = ECFM_NoShoot;
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -43,7 +39,7 @@ void UMaxPayneCameraMover::Initialize(USpringArmComponent* SpringArmComponentToS
 
 	if (CameraComponent)
 	{
-		CameraComponent->SetRelativeLocation(NoShootCameraOffset);
+		CameraComponent->SetRelativeLocation(NoShootCameraOffset.CameraOffset);
 	}
 }
 
@@ -58,15 +54,15 @@ void UMaxPayneCameraMover::SwitchCameraFocusMode(ECameraFocusMode NewFocusMode)
 	switch (CurrentCameraFocusMode)
 	{
 	case ECFM_NoShoot:
-		DesiredCameraPosition = NoShootCameraOffset;
+		DesiredCameraOffset = &NoShootCameraOffset;
 		break;
 
 	case ECFM_NormalShoot:
-		DesiredCameraPosition = NormalShootCameraOffset;
+		DesiredCameraOffset = &NormalShootCameraOffset;
 		break;
 
 	case ECFM_ADS_Shoot:
-		DesiredCameraPosition = ADS_ShootCameraOffset;
+		DesiredCameraOffset = &ADS_ShootCameraOffset;
 		break;
 
 	default:
@@ -96,8 +92,9 @@ void UMaxPayneCameraMover::UpdateCameraPositionForFocusMode(float DeltaTime)
 		return;
 	}
 
-	LerpProgress += DeltaTime * CameraLerpSpeedForFocusChange;
-	const FVector DeltaCameraPosition = FMath::InterpEaseOut(StartingCameraPosition, DesiredCameraPosition, LerpProgress,
-	                                                        CameraLerpEaseSpeedExponential);
+	LerpProgress += DeltaTime * DesiredCameraOffset->CameraLerpSpeed;
+	const FVector DeltaCameraPosition = FMath::InterpEaseOut(StartingCameraPosition,
+	                                                         DesiredCameraOffset->CameraOffset, LerpProgress,
+	                                                         DesiredCameraOffset->CameraLerpSpeedEaseExponential);
 	CameraComponent->SetRelativeLocation(DeltaCameraPosition);
 }

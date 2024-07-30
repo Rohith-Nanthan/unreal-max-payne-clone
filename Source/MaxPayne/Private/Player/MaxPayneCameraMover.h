@@ -15,6 +15,20 @@ enum ECameraFocusMode
 	ECFM_ADS_Shoot,
 };
 
+USTRUCT()
+struct FCameraOffsetData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	FVector CameraOffset;
+
+	UPROPERTY(EditAnywhere)
+	float CameraLerpSpeed;
+
+	UPROPERTY(EditAnywhere)
+	float CameraLerpSpeedEaseExponential;
+};
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -35,35 +49,41 @@ public:
 	void SwitchCameraFocusMode(ECameraFocusMode NewFocusMode);
 
 private:
-	UPROPERTY(EditAnywhere)
-	float CameraLerpSpeedForFocusChange = 2.f;
-
-	UPROPERTY(EditAnywhere)
-	float CameraLerpEaseSpeedExponential = 1.f;
-
 	UPROPERTY(VisibleAnywhere)
 	bool bIsUpdatingCameraPosition;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	FVector StartingCameraPosition;
 
 	UPROPERTY(VisibleAnywhere)
-	FVector DesiredCameraPosition;
-
-	UPROPERTY(VisibleAnywhere)
 	float LerpProgress;
-	
+
 	void UpdateCameraPositionForFocusMode(float DeltaTime);
 
 protected:
 	UPROPERTY(EditAnywhere)
-	FVector NoShootCameraOffset;
+	FCameraOffsetData NoShootCameraOffset =
+	{
+		FVector(0.f, 50.f, 0.f),
+		2.f,
+		3.f
+	};
 
 	UPROPERTY(EditAnywhere)
-	FVector NormalShootCameraOffset;
+	FCameraOffsetData NormalShootCameraOffset =
+	{
+		FVector(10.f, 100.f, 0.f),
+		2.f,
+		3.f
+	};
 
 	UPROPERTY(EditAnywhere)
-	FVector ADS_ShootCameraOffset;
+	FCameraOffsetData ADS_ShootCameraOffset =
+	{
+		FVector(30.f, 100.f, 0.f),
+		5.f,
+		3.f
+	};
 
 private:
 	UPROPERTY()
@@ -77,4 +97,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TEnumAsByte<ECameraFocusMode> CurrentCameraFocusMode;
+
+	FCameraOffsetData* DesiredCameraOffset;
 };
