@@ -6,6 +6,7 @@
 #include "MaxPayneCameraMover.h"
 #include "MaxPayneController.h"
 #include "PlayerCombatHandler.h"
+#include "PlayerHUD.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -30,7 +31,6 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
-	MaxPayneCameraMover = CreateDefaultSubobject<UMaxPayneCameraMover>(TEXT("CameraMover"));
 
 	//Actor components
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -42,8 +42,10 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	WeaponShootComponent->Initialize(CameraComponent, MaxPayneCameraMover);
 
 	CombatHandler = CreateDefaultSubobject<UPlayerCombatHandler>(TEXT("CombatHandler"));
-
 	MaxPayneAnimationHandler = CreateDefaultSubobject<UMaxPayneAnimationHandler>(TEXT("AnimationHandler"));
+	MaxPayneCameraMover = CreateDefaultSubobject<UMaxPayneCameraMover>(TEXT("CameraMover"));
+	PlayerHUD = CreateDefaultSubobject<UPlayerHUD>(TEXT("PlayerHUD"));
+	
 	PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -69,6 +71,7 @@ void AMaxPayneCharacter::PossessedBy(AController* NewController)
 	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
 	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, CharacterMesh, PlayerMover);
 	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover, WeaponShootComponent);
+	PlayerHUD->Initialize(MaxPayneController);
 }
 
 void AMaxPayneCharacter::Shoot()
