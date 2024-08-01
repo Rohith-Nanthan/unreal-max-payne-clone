@@ -7,7 +7,11 @@
 
 UPlayerInputReaderComponent::UPlayerInputReaderComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Yellow,TEXT("Reader update enabled"));
+	}
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UPlayerInputReaderComponent::SetupInputComponent(UInputComponent* Inputcomponent,
@@ -22,42 +26,48 @@ void UPlayerInputReaderComponent::SetupInputComponent(UInputComponent* Inputcomp
 
 	EnhancedInputComponent->BindAction(JumpInputAction, ETriggerEvent::Triggered, this,
 	                                   &UPlayerInputReaderComponent::OnJumpTriggered);
-	EnhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this,
-	                                   &UPlayerInputReaderComponent::OnMoveTriggered);
-	EnhancedInputComponent->BindAction(LookInputAction, ETriggerEvent::Triggered, this,
-									   &UPlayerInputReaderComponent::OnLookTriggered);
+
+	MoveInputBinding = &EnhancedInputComponent->BindActionValue(MoveInputAction);
+	LookInputBinding = &EnhancedInputComponent->BindActionValue(LookInputAction);
+	AimInputBinding = &EnhancedInputComponent->BindActionValue(AimInputAction);
+
+	EnhancedInputComponent->BindAction(ShootInputAction, ETriggerEvent::Triggered, this,
+	                                   &UPlayerInputReaderComponent::OnShootTriggered);
+}
+
+void UPlayerInputReaderComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                                FActorComponentTickFunction* ThisTickFunction)
+{
+	MoveInputVector = MoveInputBinding->GetValue().Get<FVector2D>();
+	LookInputVector = LookInputBinding->GetValue().Get<FVector2D>();
+	bIsAiming = AimInputBinding->GetValue().Get<bool>();
+
+	if (GEngine)
+	{
+		FString PrintStatement = FString::Printf(TEXT("Move %s; Look: %s"), *MoveInputVector.ToString(),
+		                                         *LookInputVector.ToString());
+		GEngine->AddOnScreenDebugMessage(68, 1.f, FColor::Red, PrintStatement);
+	}
+
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UPlayerInputReaderComponent::OnJumpTriggered()
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, TEXT("Jump Pressed"));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, TEXT("Jump Pressed"));
 	}
 
 	OnJumpInputReceived.Broadcast();
 }
 
-void UPlayerInputReaderComponent::OnMoveTriggered(const FInputActionValue& InputActionValue)
+void UPlayerInputReaderComponent::OnShootTriggered()
 {
-	const FVector2D MoveInput = InputActionValue.Get<FVector2D>();
 	if (GEngine)
 	{
-		const FString MoveInputValue = FString::Printf(TEXT("Move x: %f, y %f"), MoveInput.X, MoveInput.Y);
-		GEngine->AddOnScreenDebugMessage(2, 1.f, FColor::Green, MoveInputValue);
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, TEXT("Shoot Pressed"));
 	}
 
-	OnMoveInputReceived.Broadcast(MoveInput);
-}
-
-void UPlayerInputReaderComponent::OnLookTriggered(const FInputActionValue& InputActionValue)
-{
-	const FVector2D LookInput = InputActionValue.Get<FVector2D>();
-	if (GEngine)
-	{
-		const FString MoveInputValue = FString::Printf(TEXT("Look x: %f, y %f"), LookInput.X, LookInput.Y);
-		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Green, MoveInputValue);
-	}
-
-	OnLookInputReceived.Broadcast(LookInput);
+	OnShootInputReceived.Broadcast();
 }

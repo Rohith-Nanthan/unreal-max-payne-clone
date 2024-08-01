@@ -43,10 +43,24 @@ protected:
 
 	//Walking
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Walk)
-	float WalkingSpeed = 300.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Movement)
+	float StartingMoveSpeed = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Movement)
+	float MaxMoveSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Movement)
+	float MoveAccleration = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Movement)
+	float MoveDeAccleration = 200.f;
 
 private:
+	bool bIsReceivingMovementInput;
+	bool bIsMoving;
+	FVector MovementDirection;
+	float CurrentMovingSpeed = 0.f;
+
 	bool bIsJumping;
 	float ElapsedJumpDuration;
 	FHitResult LastMovementHitResult;
@@ -62,5 +76,9 @@ public:
 	void StartJumping();
 	void StopJumping();
 
-	void MoveAlongDirection(FVector Direction);
+	void UpdateMovementData(FVector NewMovementDirection, bool bIsMoveInputreceived);
+	float GetCurrentMovementSpeed()const
+	{
+		return CurrentMovingSpeed;
+	}
 };

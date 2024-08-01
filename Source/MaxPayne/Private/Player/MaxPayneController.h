@@ -17,11 +17,38 @@ class AMaxPayneController : public APlayerController
 
 public:
 	explicit AMaxPayneController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	virtual void Tick(float DeltaSeconds) override;
 
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
+
+public:
+	FORCEINLINE FVector GetForwardVectorProjectedAlong_XY_Plane() const
+	{
+		const FVector ControllerForwardDirection = LookRotator.Vector();
+		return FVector::VectorPlaneProject(
+			ControllerForwardDirection, FVector::UpVector);
+	}
+
+	FORCEINLINE FVector GetRightVectorProjectedAlong_XY_Plane() const
+	{
+		return GetForwardVectorProjectedAlong_XY_Plane().RotateAngleAxis(90, FVector::UpVector);
+	}
+
+private:
+	UFUNCTION()
+	void UpdateMovementDirection();
+
+	UFUNCTION()
+	void RotateControllerForLook();
+
+	UFUNCTION()
+	void OnJumpInputReceived();
+
+	UFUNCTION()
+	void OnShootInputReceived();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -34,26 +61,16 @@ private:
 	UPROPERTY()
 	TObjectPtr<UPlayerMovementComponent> PlayerMover;
 
+
 public:
-	FORCEINLINE FVector GetForwardVectorProjectedAlong_XY_Plane() const
+	UPROPERTY(VisibleAnywhere)
+	FVector2D LastMovementDirection;
+
+	UPROPERTY(VisibleAnywhere)
+	FRotator LookRotator;
+
+	UPlayerInputReaderComponent* GetInputReader() const
 	{
-		const FVector ControllerForwardDirection = GetControlRotation().Vector();
-		return FVector::VectorPlaneProject(
-			ControllerForwardDirection, FVector::UpVector);
+		return  PlayerInputReader;
 	}
-
-	FORCEINLINE FVector GetRightVectorProjectedAlong_XY_Plane() const
-	{
-		return GetForwardVectorProjectedAlong_XY_Plane().RotateAngleAxis(90, FVector::UpVector);
-	}
-
-private:
-	UFUNCTION()
-	void OnJumpInputReceived();
-
-	UFUNCTION()
-	void OnMoveInputReceived(FVector2D MovementInput);
-
-	UFUNCTION()
-	void OnLookInputReceived(FVector2D LookInput);
 };

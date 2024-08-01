@@ -4,25 +4,99 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Editor/PropertyEditorTestObject.h"
 #include "MaxPayneCameraMover.generated.h"
 
+UENUM()
+enum ECameraFocusMode
+{
+	ECFM_NoShoot,
+	ECFM_NormalShoot,
+	ECFM_ADS_Shoot,
+};
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+USTRUCT()
+struct FCameraOffsetData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	FVector CameraOffset;
+
+	UPROPERTY(EditAnywhere)
+	float CameraLerpSpeed;
+
+	UPROPERTY(EditAnywhere)
+	float CameraLerpSpeedEaseExponential;
+};
+
+class USpringArmComponent;
+class UCameraComponent;
+class AMaxPayneController;
+
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UMaxPayneCameraMover : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
+public:
 	UMaxPayneCameraMover();
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+	void Initialize(USpringArmComponent* SpringArmComponentToSet, UCameraComponent* CameraComponentToSet,
+	                AMaxPayneController* MaxPayneControllerToSet);
+	void SwitchCameraFocusMode(ECameraFocusMode NewFocusMode);
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	bool bIsUpdatingCameraPosition;
+
+	UPROPERTY(VisibleAnywhere)
+	FVector StartingCameraPosition;
+
+	UPROPERTY(VisibleAnywhere)
+	float LerpProgress;
+
+	void UpdateCameraPositionForFocusMode(float DeltaTime);
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere)
+	FCameraOffsetData NoShootCameraOffset =
+	{
+		FVector(0.f, 50.f, 0.f),
+		2.f,
+		3.f
+	};
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(EditAnywhere)
+	FCameraOffsetData NormalShootCameraOffset =
+	{
+		FVector(10.f, 100.f, 0.f),
+		2.f,
+		3.f
+	};
 
-		
+	UPROPERTY(EditAnywhere)
+	FCameraOffsetData ADS_ShootCameraOffset =
+	{
+		FVector(80.f, 50.f, 0.f),
+		5.f,
+		3.f
+	};
+
+private:
+	UPROPERTY()
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY()
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY()
+	TObjectPtr<AMaxPayneController> MaxPayneController;
+
+	UPROPERTY(VisibleAnywhere)
+	TEnumAsByte<ECameraFocusMode> CurrentCameraFocusMode;
+
+	FCameraOffsetData* DesiredCameraOffset;
 };

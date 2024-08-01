@@ -10,8 +10,23 @@
 
 AMaxPayneController::AMaxPayneController(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	PlayerInputReader = CreateDefaultSubobject<UPlayerInputReaderComponent>(TEXT("InputReader"));
 	PlayerCameraManagerClass = AMaxPayneCameraManager::StaticClass();
+}
+
+void AMaxPayneController::Tick(float DeltaSeconds)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(6, 2.f, FColor::Yellow,TEXT("Controller updating"));
+	}
+
+	RotateControllerForLook();
+	UpdateMovementDirection();
+	
+	Super::Tick(DeltaSeconds);
 }
 
 void AMaxPayneController::SetupInputComponent()
@@ -39,8 +54,7 @@ void AMaxPayneController::OnPossess(APawn* InPawn)
 	}
 
 	PlayerInputReader->OnJumpInputReceived.AddDynamic(this, &AMaxPayneController::OnJumpInputReceived);
-	PlayerInputReader->OnMoveInputReceived.AddDynamic(this, &AMaxPayneController::OnMoveInputReceived);
-	PlayerInputReader->OnLookInputReceived.AddDynamic(this, &AMaxPayneController::OnLookInputReceived);
+	PlayerInputReader->OnShootInputReceived.AddDynamic(this, &AMaxPayneController::OnShootInputReceived);
 }
 
 void AMaxPayneController::OnUnPossess()
@@ -53,15 +67,50 @@ void AMaxPayneController::OnUnPossess()
 	}
 
 	PlayerInputReader->OnJumpInputReceived.RemoveDynamic(this, &AMaxPayneController::OnJumpInputReceived);
-	PlayerInputReader->OnMoveInputReceived.RemoveDynamic(this, &AMaxPayneController::OnMoveInputReceived);
-	PlayerInputReader->OnLookInputReceived.RemoveDynamic(this, &AMaxPayneController::OnLookInputReceived);
+	PlayerInputReader->OnShootInputReceived.RemoveDynamic(this, &AMaxPayneController::OnShootInputReceived);
+}
+
+void AMaxPayneController::UpdateMovementDirection()
+{
+	const FVector2D MoveInput = PlayerInputReader->MoveInputVector;
+
+	if (PlayerMover == nullptr)
+	{
+		return;
+	}
+
+	const bool bIsMoveInputReceived = !MoveInput.Equals(FVector2D::ZeroVector);
+	if (bIsMoveInputReceived)
+	{
+		LastMovementDirection = MoveInput;
+	}
+
+	const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane() * LastMovementDirection.Y;
+	const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane() * LastMovementDirection.X;
+	const FVector CameraBasedMovementDirection = (ForwardMovement + StrafeMovement).GetSafeNormal();
+	PlayerMover->UpdateMovementData(CameraBasedMovementDirection, bIsMoveInputReceived);
+}
+
+void AMaxPayneController::RotateControllerForLook()
+{
+	const FVector2D LookInput = PlayerInputReader->LookInputVector;
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(7, 2.f, FColor::Yellow,
+		                                 FString::Printf(TEXT("Looking at %s."), *LookInput.ToString()));
+	}
+
+	LookRotator.Add(LookInput.Y, LookInput.X, 0.f);
+	AddPitchInput(LookInput.Y);
+	AddYawInput(LookInput.X);
 }
 
 void AMaxPayneController::OnJumpInputReceived()
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Yellow,TEXT("Jump input received"));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Yellow,TEXT("Jump input received"));
 	}
 
 	if (PlayerMover == nullptr)
@@ -72,26 +121,15 @@ void AMaxPayneController::OnJumpInputReceived()
 	PlayerMover->StartJumping();
 }
 
-void AMaxPayneController::OnMoveInputReceived(FVector2D MovementInput)
-{
-	if (PlayerMover == nullptr)
-	{
-		return;
-	}
-	
-	const FVector ForwardMovement = GetForwardVectorProjectedAlong_XY_Plane() * MovementInput.X;
-	const FVector StrafeMovement = GetRightVectorProjectedAlong_XY_Plane() * MovementInput.Y;
-	const FVector MovementDirection = ForwardMovement + StrafeMovement;
-	PlayerMover->MoveAlongDirection(MovementDirection);
-}
-
-void AMaxPayneController::OnLookInputReceived(FVector2D LookInput)
+void AMaxPayneController::OnShootInputReceived()
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(5, 1.f, FColor::Yellow,TEXT("Look input received"));
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red,TEXT("Shoot input received"));
 	}
 
-	AddPitchInput(LookInput.Y);
-	AddYawInput(LookInput.X);
+	if (MaxPayneCharacter)
+	{
+		MaxPayneCharacter->Shoot();
+	}
 }
