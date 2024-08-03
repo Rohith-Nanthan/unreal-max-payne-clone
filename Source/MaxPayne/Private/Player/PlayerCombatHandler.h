@@ -41,9 +41,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float ShootCameraFocusDuration = 3.f;
 
-	float ElapsedCameraFocusTime;
+	float ElapsedCameraFocusTimeForNormalShoot;
 	bool bIsCameraFocusingForNormalShoot;
-	bool bIsCameraAiming;
+	bool bIsCameraAimingPreviousFrame;
 
 	void CheckAndFocusCameraForShoot();
 };
