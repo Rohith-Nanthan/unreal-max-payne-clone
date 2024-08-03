@@ -13,8 +13,7 @@
 
 #include "Combat/HealthComponent.h"
 #include "PlayerMovementComponent.h"
-#include "Combat/WeaponShootComponent.h"
-
+#include "Combat/PistolWeapon.h"
 
 AMaxPayneCharacter::AMaxPayneCharacter()
 {
@@ -31,21 +30,17 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
-
 	//Actor components
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	PlayerMover = CreateDefaultSubobject<UPlayerMovementComponent>(TEXT("PlayerMover"));
 	PlayerMover->UpdatedComponent = CapsuleCollider;
 
-	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
-	WeaponShootComponent->Initialize(CameraComponent, MaxPayneCameraMover);
-
 	CombatHandler = CreateDefaultSubobject<UPlayerCombatHandler>(TEXT("CombatHandler"));
 	MaxPayneAnimationHandler = CreateDefaultSubobject<UMaxPayneAnimationHandler>(TEXT("AnimationHandler"));
 	MaxPayneCameraMover = CreateDefaultSubobject<UMaxPayneCameraMover>(TEXT("CameraMover"));
 	PlayerHUD = CreateDefaultSubobject<UPlayerHUD>(TEXT("PlayerHUD"));
-	
+
 	PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -70,11 +65,34 @@ void AMaxPayneCharacter::PossessedBy(AController* NewController)
 
 	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
 	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, CharacterMesh, PlayerMover);
-	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover, WeaponShootComponent);
+
+	SpawnPistol();
+	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover, PistolWeapon);
+
 	PlayerHUD->Initialize(MaxPayneController);
 }
 
 void AMaxPayneCharacter::Shoot()
 {
 	CombatHandler->Shoot();
+}
+
+void AMaxPayneCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	SpawnPistol();
+}
+
+void AMaxPayneCharacter::SpawnPistol()
+{
+	if (PistolWeapon)
+	{
+		return;
+	}
+
+	FVector SpawnLocation = CharacterMesh->GetSocketLocation(OneHandWeaponAttachSocketName);
+
+	PistolWeapon = GetWorld()->SpawnActor<APistolWeapon>(PistolWeaponClass);
+	PistolWeapon->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform, OneHandWeaponAttachSocketName);
+	PistolWeapon->Initialize(CameraComponent);
 }

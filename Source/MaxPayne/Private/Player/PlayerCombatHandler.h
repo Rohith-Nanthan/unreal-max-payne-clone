@@ -8,7 +8,7 @@
 
 class UMaxPayneCameraMover;
 class UPlayerInputReaderComponent;
-class UWeaponShootComponent;
+class AWeaponBase;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UPlayerCombatHandler : public UActorComponent
@@ -21,7 +21,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void Initialize(UPlayerInputReaderComponent* InputReader, UMaxPayneCameraMover* CameraMover,
-	                UWeaponShootComponent* WeaponShootComponent);
+	                AWeaponBase* Weapon);
 	void Shoot();
 
 private:
@@ -36,7 +36,7 @@ private:
 	TObjectPtr<UPlayerInputReaderComponent> InputReader;
 
 	UPROPERTY()
-	TObjectPtr<UWeaponShootComponent> WeaponShoot;
+	TObjectPtr<AWeaponBase> WeaponToShoot;
 
 	UPROPERTY(EditAnywhere)
 	float ShootCameraFocusDuration = 3.f;

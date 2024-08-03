@@ -17,7 +17,7 @@ public:
 	UWeaponShootComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
-	void Initialize(USceneComponent* HitTraceStartPointToSet, UMaxPayneCameraMover* CameraMoverComponent);
+	void Initialize(USceneComponent* HitTraceStartPointToSet);
 	void Shoot();
 
 protected:

@@ -5,7 +5,7 @@
 
 #include "MaxPayneCameraMover.h"
 #include "PlayerInputReaderComponent.h"
-#include "Combat/WeaponShootComponent.h"
+#include "Combat/WeaponBase.h"
 
 UPlayerCombatHandler::UPlayerCombatHandler()
 {
@@ -75,11 +75,11 @@ void UPlayerCombatHandler::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UPlayerCombatHandler::Initialize(UPlayerInputReaderComponent* InputReaderComponent,
                                       UMaxPayneCameraMover* CameraMoverComponent,
-                                      UWeaponShootComponent* WeaponShootComponent)
+                                      AWeaponBase* Weapon)
 {
 	InputReader = InputReaderComponent;
 	CameraMover = CameraMoverComponent;
-	WeaponShoot = WeaponShootComponent;
+	WeaponToShoot = Weapon;
 }
 
 void UPlayerCombatHandler::CheckAndFocusCameraForShoot()
@@ -104,6 +104,6 @@ void UPlayerCombatHandler::CheckAndFocusCameraForShoot()
 
 void UPlayerCombatHandler::Shoot()
 {
-	WeaponShoot->Shoot();
+	WeaponToShoot->Shoot();
 	CheckAndFocusCameraForShoot();
 }

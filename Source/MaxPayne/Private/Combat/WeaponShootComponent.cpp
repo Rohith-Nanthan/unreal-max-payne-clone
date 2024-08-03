@@ -18,8 +18,7 @@ void UWeaponShootComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UWeaponShootComponent::Initialize(USceneComponent* HitTraceStartPointToSet,
-                                       UMaxPayneCameraMover* CameraMoverComponent)
+void UWeaponShootComponent::Initialize(USceneComponent* HitTraceStartPointToSet)
 {
 	HitTraceStartPoint = HitTraceStartPointToSet;
 }
