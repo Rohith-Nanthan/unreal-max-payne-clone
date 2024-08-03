@@ -9,7 +9,7 @@
 
 UMaxPayneCameraMover::UMaxPayneCameraMover()
 {
-	CurrentCameraFocusMode = ECFM_NoShoot;
+	FocusMode_FSM = new CameraFocus_FSM<ECameraFocusMode>(ECFM_NoShoot);
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
@@ -45,13 +45,12 @@ void UMaxPayneCameraMover::Initialize(USpringArmComponent* SpringArmComponentToS
 
 void UMaxPayneCameraMover::SwitchCameraFocusMode(ECameraFocusMode NewFocusMode)
 {
-	if (CurrentCameraFocusMode == NewFocusMode)
+	if (!SwitchCameraFocusState(*FocusMode_FSM, NewFocusMode))
 	{
 		return;
 	}
 
-	CurrentCameraFocusMode = NewFocusMode;
-	switch (CurrentCameraFocusMode)
+	switch (FocusMode_FSM->CurrentState)
 	{
 	case ECFM_NoShoot:
 		DesiredCameraOffset = &NoShootCameraOffset;

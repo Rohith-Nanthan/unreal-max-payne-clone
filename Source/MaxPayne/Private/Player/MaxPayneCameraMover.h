@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Core/FSM.h"
 #include "Editor/PropertyEditorTestObject.h"
 #include "MaxPayneCameraMover.generated.h"
 
@@ -91,12 +92,18 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> CameraComponent;
-
+	
 	UPROPERTY()
 	TObjectPtr<AMaxPayneController> MaxPayneController;
 
-	UPROPERTY(VisibleAnywhere)
-	TEnumAsByte<ECameraFocusMode> CurrentCameraFocusMode;
-
+	Create_FSM(CameraFocus_FSM, ECameraFocusMode,UMaxPayneCameraMover)
+	CameraFocus_FSM<ECameraFocusMode>* FocusMode_FSM;
+	
 	FCameraOffsetData* DesiredCameraOffset;
+
+	bool SwitchCameraFocusState(CameraFocus_FSM<ECameraFocusMode>& FSM_Inst, ECameraFocusMode NewFocusMode)
+	{
+		return  FSM_Inst.SwitchState(NewFocusMode);
+	}
 };
+
