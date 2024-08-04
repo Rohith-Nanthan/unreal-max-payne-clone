@@ -20,8 +20,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void Initialize(UPlayerInputReaderComponent* InputReader, UMaxPayneCameraMover* CameraMover,
-	                AWeaponBase* Weapon);
+	void Initialize(UPlayerInputReaderComponent* InputReader, UMaxPayneCameraMover* CameraMover);
+	void SetWeapon(AWeaponBase* WeaponToSet)
+	{
+		WeaponToShoot = WeaponToSet;
+	}
 	void Shoot();
 
 private:

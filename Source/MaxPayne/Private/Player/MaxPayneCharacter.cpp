@@ -14,6 +14,7 @@
 #include "Combat/HealthComponent.h"
 #include "PlayerMovementComponent.h"
 #include "Combat/PistolWeapon.h"
+#include "Logging/StructuredLog.h"
 
 AMaxPayneCharacter::AMaxPayneCharacter()
 {
@@ -66,8 +67,7 @@ void AMaxPayneCharacter::PossessedBy(AController* NewController)
 	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
 	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, CharacterMesh, PlayerMover);
 
-	SpawnPistol();
-	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover, PistolWeapon);
+	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover);
 
 	PlayerHUD->Initialize(MaxPayneController);
 }
@@ -85,14 +85,11 @@ void AMaxPayneCharacter::BeginPlay()
 
 void AMaxPayneCharacter::SpawnPistol()
 {
-	if (PistolWeapon)
-	{
-		return;
-	}
-
-	FVector SpawnLocation = CharacterMesh->GetSocketLocation(OneHandWeaponAttachSocketName);
-
 	PistolWeapon = GetWorld()->SpawnActor<APistolWeapon>(PistolWeaponClass);
-	PistolWeapon->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform, OneHandWeaponAttachSocketName);
+	bool bIsAttachmentSuccessful = PistolWeapon->AttachToComponent(CharacterMesh,
+	                                                               FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                                               OneHandWeaponAttachSocketName);
+	UE_LOGFMT(LogTemp, Warning, "Attach was: {0}", bIsAttachmentSuccessful);
 	PistolWeapon->Initialize(CameraComponent);
+	CombatHandler->SetWeapon(PistolWeapon);
 }

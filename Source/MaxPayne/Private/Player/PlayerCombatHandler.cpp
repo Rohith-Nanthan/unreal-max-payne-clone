@@ -59,7 +59,7 @@ void UPlayerCombatHandler::HandleCameraFocusForADS()
 			CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NoShoot);
 		}
 	}
-	
+
 	bIsCameraAimingPreviousFrame = bIsCameraAimingCurrentFrame;
 }
 
@@ -74,12 +74,10 @@ void UPlayerCombatHandler::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 void UPlayerCombatHandler::Initialize(UPlayerInputReaderComponent* InputReaderComponent,
-                                      UMaxPayneCameraMover* CameraMoverComponent,
-                                      AWeaponBase* Weapon)
+                                      UMaxPayneCameraMover* CameraMoverComponent)
 {
 	InputReader = InputReaderComponent;
 	CameraMover = CameraMoverComponent;
-	WeaponToShoot = Weapon;
 }
 
 void UPlayerCombatHandler::CheckAndFocusCameraForShoot()
@@ -104,6 +102,10 @@ void UPlayerCombatHandler::CheckAndFocusCameraForShoot()
 
 void UPlayerCombatHandler::Shoot()
 {
+	if (!WeaponToShoot)
+	{
+		return;
+	}
 	WeaponToShoot->Shoot();
 	CheckAndFocusCameraForShoot();
 }
