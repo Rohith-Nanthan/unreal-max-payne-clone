@@ -87,7 +87,7 @@ void AMaxPayneCharacter::SpawnPistol()
 {
 	PistolWeapon = GetWorld()->SpawnActor<APistolWeapon>(PistolWeaponClass);
 	bool bIsAttachmentSuccessful = PistolWeapon->AttachToComponent(CharacterMesh,
-	                                                               FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                                               FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 	                                                               OneHandWeaponAttachSocketName);
 	UE_LOGFMT(LogTemp, Warning, "Attach was: {0}", bIsAttachmentSuccessful);
 	PistolWeapon->Initialize(CameraComponent);
