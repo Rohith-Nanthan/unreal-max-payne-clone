@@ -32,6 +32,8 @@ private:
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
+
+	virtual void PostInitializeComponents() override;
 	virtual void PossessedBy(AController* NewController) override;
 
 	void SpawnPistol();
@@ -44,12 +46,8 @@ protected:
 	TSubclassOf<APistolWeapon> PistolWeaponClass;
 
 	//Actors
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UCapsuleComponent> CapsuleCollider;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<USkeletalMeshComponent> CharacterMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
@@ -79,4 +77,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPlayerHUD> PlayerHUD;
+
+private:	
+	UPROPERTY(VisibleAnywhere)
+	TArray<USkeletalMeshComponent*> AllSkeletalMeshComponents;
 };

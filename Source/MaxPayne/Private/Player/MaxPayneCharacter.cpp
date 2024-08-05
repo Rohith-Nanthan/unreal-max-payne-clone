@@ -22,9 +22,6 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
 	SetRootComponent(CapsuleCollider);
 
-	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
-	CharacterMesh->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
-
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComponent->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
 
@@ -58,14 +55,24 @@ float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	return ActualDamage;
 }
 
+void AMaxPayneCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	UE_LOGFMT(LogTemp, Warning, "Post comp Initialized");
+	GetComponents(USkeletalMeshComponent::StaticClass(), AllSkeletalMeshComponents);
+	SpawnPistol();
+}
+
 void AMaxPayneCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	UE_LOGFMT(LogTemp, Warning, "Posess started");
+
 	AMaxPayneController* MaxPayneController = Cast<AMaxPayneController>(NewController);
 
 	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
-	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, CharacterMesh, PlayerMover);
+	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, AllSkeletalMeshComponents, PlayerMover);
 
 	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover);
 
@@ -80,13 +87,31 @@ void AMaxPayneCharacter::Shoot()
 void AMaxPayneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	SpawnPistol();
+	UE_LOGFMT(LogTemp, Warning, "Begin play");
 }
 
 void AMaxPayneCharacter::SpawnPistol()
 {
 	PistolWeapon = GetWorld()->SpawnActor<APistolWeapon>(PistolWeaponClass);
-	bool bIsAttachmentSuccessful = PistolWeapon->AttachToComponent(CharacterMesh,
+
+	if (AllSkeletalMeshComponents.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("No skeletal mesh found"));
+		return;
+	}
+
+	USkeletalMeshComponent* MeshToAttachPistol = AllSkeletalMeshComponents[0];
+	for (USkeletalMeshComponent* Mesh : AllSkeletalMeshComponents)
+	{
+		if (Mesh->DoesSocketExist(OneHandWeaponAttachSocketName))
+		{
+			MeshToAttachPistol = Mesh;
+			break;
+		}
+	}
+
+
+	bool bIsAttachmentSuccessful = PistolWeapon->AttachToComponent(MeshToAttachPistol,
 	                                                               FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 	                                                               OneHandWeaponAttachSocketName);
 	UE_LOGFMT(LogTemp, Warning, "Attach was: {0}", bIsAttachmentSuccessful);

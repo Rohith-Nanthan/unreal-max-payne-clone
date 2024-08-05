@@ -20,7 +20,7 @@ void UMaxPayneAnimationHandler::TickComponent(float DeltaTime, ELevelTick TickTy
 	{
 		ArtRoot->SetWorldRotation(FRotator(0.f, Controller->LookRotator.Yaw, 0.f));
 	}
-	if (Mesh && Controller && MovementComponent)
+	if (Controller && MovementComponent)
 	{
 		const FVector2D MovementDirection = Controller->LastMovementDirection;
 		const float CurrentSpeed = MovementComponent->GetCurrentMovementSpeed();
@@ -31,20 +31,24 @@ void UMaxPayneAnimationHandler::TickComponent(float DeltaTime, ELevelTick TickTy
 			GEngine->AddOnScreenDebugMessage(8, 1.f, FColor::Red,
 			                                 FString::Printf(TEXT("Speed:%s"), *BlendSpacePosition.ToString()));
 		}
-		Mesh->GetSingleNodeInstance()->SetBlendSpacePosition(BlendSpacePosition);
+
+		for (USkeletalMeshComponent* Mesh : AllCharacterSkeletalMesh)
+		{
+			Mesh->GetSingleNodeInstance()->SetBlendSpacePosition(BlendSpacePosition);
+		}
 	}
 }
 
 void UMaxPayneAnimationHandler::Initialize(AMaxPayneController* MaxPayneController, USceneComponent* CharacterArtRoot,
-                                           USkeletalMeshComponent* CharacterMesh,
+                                           TArray<USkeletalMeshComponent*>& AllSkeletalMesh,
                                            UPlayerMovementComponent* PlayerMovementComponent)
 {
 	ArtRoot = CharacterArtRoot;
 	Controller = MaxPayneController;
-	Mesh = CharacterMesh;
+	AllCharacterSkeletalMesh = AllSkeletalMesh;
 	MovementComponent = PlayerMovementComponent;
 
-	if (Mesh)
+	for (USkeletalMeshComponent* Mesh : AllCharacterSkeletalMesh)
 	{
 		Mesh->PlayAnimation(MovementAnimationBlendSpace, true);
 	}

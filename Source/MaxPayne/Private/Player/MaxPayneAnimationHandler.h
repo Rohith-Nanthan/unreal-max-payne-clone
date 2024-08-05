@@ -22,7 +22,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void Initialize(AMaxPayneController* MaxPayneController, USceneComponent* CharacterArtRoot,
-	                USkeletalMeshComponent* CharacterMesh, UPlayerMovementComponent* PlayerMovementComponent);
+	                TArray<USkeletalMeshComponent*>& AllSkeletalMesh, UPlayerMovementComponent* PlayerMovementComponent);
 
 private:
 	UPROPERTY()
@@ -32,7 +32,7 @@ private:
 	TObjectPtr<USceneComponent> ArtRoot;
 
 	UPROPERTY()
-	TObjectPtr<USkeletalMeshComponent> Mesh;
+	TArray<USkeletalMeshComponent*> AllCharacterSkeletalMesh;
 
 	UPROPERTY()
 	TObjectPtr<UPlayerMovementComponent> MovementComponent;
