@@ -82,6 +82,7 @@ void AMaxPayneCharacter::PossessedBy(AController* NewController)
 void AMaxPayneCharacter::Shoot()
 {
 	CombatHandler->Shoot();
+	MaxPayneAnimationHandler->PlayShootAnimation();
 }
 
 void AMaxPayneCharacter::BeginPlay()

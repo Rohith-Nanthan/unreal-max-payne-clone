@@ -22,7 +22,10 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void Initialize(AMaxPayneController* MaxPayneController, USceneComponent* CharacterArtRoot,
-	                TArray<USkeletalMeshComponent*>& AllSkeletalMesh, UPlayerMovementComponent* PlayerMovementComponent);
+	                TArray<USkeletalMeshComponent*>& AllSkeletalMesh,
+	                UPlayerMovementComponent* PlayerMovementComponent);
+
+	void PlayShootAnimation();
 
 private:
 	UPROPERTY()
@@ -40,4 +43,7 @@ private:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UBlendSpace> MovementAnimationBlendSpace;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimMontage> ShootAnimationMontage;
 };

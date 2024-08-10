@@ -53,3 +53,12 @@ void UMaxPayneAnimationHandler::Initialize(AMaxPayneController* MaxPayneControll
 		Mesh->PlayAnimation(MovementAnimationBlendSpace, true);
 	}
 }
+
+void UMaxPayneAnimationHandler::PlayShootAnimation()
+{
+	for (USkeletalMeshComponent* Mesh : AllCharacterSkeletalMesh)
+	{
+		UAnimInstance* AnimInstance = Mesh->GetAnimInstance();
+		AnimInstance->Montage_Play(ShootAnimationMontage);
+	}
+}
