@@ -24,18 +24,7 @@ void UMaxPayneAnimationHandler::TickComponent(float DeltaTime, ELevelTick TickTy
 	{
 		const FVector2D MovementDirection = Controller->LastMovementDirection;
 		const float CurrentSpeed = MovementComponent->GetCurrentMovementSpeed();
-		const FVector BlendSpacePosition(MovementDirection.X * CurrentSpeed, MovementDirection.Y * CurrentSpeed, 0.f);
-
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(8, 1.f, FColor::Red,
-			                                 FString::Printf(TEXT("Speed:%s"), *BlendSpacePosition.ToString()));
-		}
-
-		for (USkeletalMeshComponent* Mesh : AllCharacterSkeletalMesh)
-		{
-			Mesh->GetSingleNodeInstance()->SetBlendSpacePosition(BlendSpacePosition);
-		}
+		LocomotionBlendParams = FVector(MovementDirection.X * CurrentSpeed, MovementDirection.Y * CurrentSpeed, 0.f);
 	}
 }
 
@@ -47,11 +36,6 @@ void UMaxPayneAnimationHandler::Initialize(AMaxPayneController* MaxPayneControll
 	Controller = MaxPayneController;
 	AllCharacterSkeletalMesh = AllSkeletalMesh;
 	MovementComponent = PlayerMovementComponent;
-
-	for (USkeletalMeshComponent* Mesh : AllCharacterSkeletalMesh)
-	{
-		Mesh->PlayAnimation(MovementAnimationBlendSpace, true);
-	}
 }
 
 void UMaxPayneAnimationHandler::PlayShootAnimation()

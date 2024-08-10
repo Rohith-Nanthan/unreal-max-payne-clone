@@ -27,6 +27,12 @@ public:
 	AMaxPayneCharacter();
 	void Shoot();
 
+	UFUNCTION(BlueprintPure)
+	UMaxPayneAnimationHandler* GetAnimationHandler() const
+	{
+		return MaxPayneAnimationHandler;
+	}
+
 private:
 	virtual void BeginPlay() override;
 
@@ -78,7 +84,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPlayerHUD> PlayerHUD;
 
-private:	
+private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<USkeletalMeshComponent*> AllSkeletalMeshComponents;
 };

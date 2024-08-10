@@ -27,6 +27,12 @@ public:
 
 	void PlayShootAnimation();
 
+	UFUNCTION(BlueprintPure)
+	FVector GetLocomotionBlendParams() const
+	{
+		return LocomotionBlendParams;
+	}
+
 private:
 	UPROPERTY()
 	TObjectPtr<AMaxPayneController> Controller;
@@ -42,8 +48,7 @@ private:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UBlendSpace> MovementAnimationBlendSpace;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UAnimMontage> ShootAnimationMontage;
+
+	FVector LocomotionBlendParams;
 };
