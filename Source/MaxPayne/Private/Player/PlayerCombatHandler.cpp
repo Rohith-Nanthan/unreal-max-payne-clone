@@ -5,7 +5,7 @@
 
 #include "MaxPayneCameraMover.h"
 #include "PlayerInputReaderComponent.h"
-#include "Combat/WeaponShootComponent.h"
+#include "Combat/WeaponBase.h"
 
 UPlayerCombatHandler::UPlayerCombatHandler()
 {
@@ -14,13 +14,13 @@ UPlayerCombatHandler::UPlayerCombatHandler()
 
 void UPlayerCombatHandler::HandleCameraFocusingForNormalShoot(float DeltaTime)
 {
-	if (!bIsCameraFocusingForNormalShoot)
+	if (bIsCameraAimingPreviousFrame || !bIsCameraFocusingForNormalShoot)
 	{
 		return;
 	}
 
-	ElapsedCameraFocusTime += DeltaTime;
-	if (ElapsedCameraFocusTime > ShootCameraFocusDuration)
+	ElapsedCameraFocusTimeForNormalShoot += DeltaTime;
+	if (ElapsedCameraFocusTimeForNormalShoot > ShootCameraFocusDuration)
 	{
 		bIsCameraFocusingForNormalShoot = false;
 
@@ -38,20 +38,29 @@ void UPlayerCombatHandler::HandleCameraFocusForADS()
 		return;
 	}
 
-	const bool bIsCameraAimingNow = InputReader->bIsAiming;
-	if (!bIsCameraAiming && bIsCameraAimingNow)
+	const bool bIsCameraAimingCurrentFrame = InputReader->bIsAiming;
+
+	if (bIsCameraAimingPreviousFrame == bIsCameraAimingCurrentFrame)
 	{
-		bIsCameraAiming = true;
+		return;
+	}
+
+	if (bIsCameraAimingCurrentFrame)
+	{
 		if (CameraMover)
 		{
 			CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_ADS_Shoot);
 		}
 	}
-	else if (bIsCameraAiming && !bIsCameraAimingNow)
+	else
 	{
-		bIsCameraAiming = false;
-		CheckAndFocusCameraForShoot();
+		if (CameraMover)
+		{
+			CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NoShoot);
+		}
 	}
+
+	bIsCameraAimingPreviousFrame = bIsCameraAimingCurrentFrame;
 }
 
 // Called every frame
@@ -65,37 +74,38 @@ void UPlayerCombatHandler::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 void UPlayerCombatHandler::Initialize(UPlayerInputReaderComponent* InputReaderComponent,
-                                      UMaxPayneCameraMover* CameraMoverComponent,
-                                      UWeaponShootComponent* WeaponShootComponent)
+                                      UMaxPayneCameraMover* CameraMoverComponent)
 {
 	InputReader = InputReaderComponent;
 	CameraMover = CameraMoverComponent;
-	WeaponShoot = WeaponShootComponent;
 }
 
 void UPlayerCombatHandler::CheckAndFocusCameraForShoot()
 {
-	if (bIsCameraAiming)
+	if (bIsCameraAimingPreviousFrame)
 	{
 		return;
 	}
 
+	ElapsedCameraFocusTimeForNormalShoot = 0;
 	if (bIsCameraFocusingForNormalShoot)
 	{
-		ElapsedCameraFocusTime = 0;
 		return;
 	}
 
+	bIsCameraFocusingForNormalShoot = true;
 	if (CameraMover)
 	{
 		CameraMover->SwitchCameraFocusMode(ECameraFocusMode::ECFM_NormalShoot);
 	}
-	bIsCameraFocusingForNormalShoot = true;
-	ElapsedCameraFocusTime = 0;
 }
 
 void UPlayerCombatHandler::Shoot()
 {
-	WeaponShoot->Shoot();
+	if (!WeaponToShoot)
+	{
+		return;
+	}
+	WeaponToShoot->Shoot();
 	CheckAndFocusCameraForShoot();
 }

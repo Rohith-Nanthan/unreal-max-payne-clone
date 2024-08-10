@@ -13,8 +13,8 @@
 
 #include "Combat/HealthComponent.h"
 #include "PlayerMovementComponent.h"
-#include "Combat/WeaponShootComponent.h"
-
+#include "Combat/PistolWeapon.h"
+#include "Logging/StructuredLog.h"
 
 AMaxPayneCharacter::AMaxPayneCharacter()
 {
@@ -22,15 +22,11 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollider"));
 	SetRootComponent(CapsuleCollider);
 
-	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
-	CharacterMesh->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
-
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComponent->AttachToComponent(CapsuleCollider, FAttachmentTransformRules::KeepRelativeTransform);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
-
 
 	//Actor components
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -38,14 +34,11 @@ AMaxPayneCharacter::AMaxPayneCharacter()
 	PlayerMover = CreateDefaultSubobject<UPlayerMovementComponent>(TEXT("PlayerMover"));
 	PlayerMover->UpdatedComponent = CapsuleCollider;
 
-	WeaponShootComponent = CreateDefaultSubobject<UWeaponShootComponent>(TEXT("WeaponShootComponent"));
-	WeaponShootComponent->Initialize(CameraComponent, MaxPayneCameraMover);
-
 	CombatHandler = CreateDefaultSubobject<UPlayerCombatHandler>(TEXT("CombatHandler"));
 	MaxPayneAnimationHandler = CreateDefaultSubobject<UMaxPayneAnimationHandler>(TEXT("AnimationHandler"));
 	MaxPayneCameraMover = CreateDefaultSubobject<UMaxPayneCameraMover>(TEXT("CameraMover"));
 	PlayerHUD = CreateDefaultSubobject<UPlayerHUD>(TEXT("PlayerHUD"));
-	
+
 	PrimaryActorTick.bCanEverTick = false;
 }
 
@@ -62,19 +55,67 @@ float AMaxPayneCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	return ActualDamage;
 }
 
+void AMaxPayneCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	UE_LOGFMT(LogTemp, Warning, "Post comp Initialized");
+	GetComponents(USkeletalMeshComponent::StaticClass(), AllSkeletalMeshComponents);
+	SpawnPistol();
+}
+
 void AMaxPayneCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	UE_LOGFMT(LogTemp, Warning, "Posess started");
+
 	AMaxPayneController* MaxPayneController = Cast<AMaxPayneController>(NewController);
 
 	MaxPayneCameraMover->Initialize(SpringArmComponent, CameraComponent, MaxPayneController);
-	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, CharacterMesh, PlayerMover);
-	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover, WeaponShootComponent);
+	MaxPayneAnimationHandler->Initialize(MaxPayneController, CapsuleCollider, AllSkeletalMeshComponents, PlayerMover);
+
+	CombatHandler->Initialize(MaxPayneController->GetInputReader(), MaxPayneCameraMover);
+
 	PlayerHUD->Initialize(MaxPayneController);
 }
 
 void AMaxPayneCharacter::Shoot()
 {
 	CombatHandler->Shoot();
+	MaxPayneAnimationHandler->PlayShootAnimation();
+}
+
+void AMaxPayneCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	UE_LOGFMT(LogTemp, Warning, "Begin play");
+}
+
+void AMaxPayneCharacter::SpawnPistol()
+{
+	PistolWeapon = GetWorld()->SpawnActor<APistolWeapon>(PistolWeaponClass);
+
+	if (AllSkeletalMeshComponents.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("No skeletal mesh found"));
+		return;
+	}
+
+	USkeletalMeshComponent* MeshToAttachPistol = AllSkeletalMeshComponents[0];
+	for (USkeletalMeshComponent* Mesh : AllSkeletalMeshComponents)
+	{
+		if (Mesh->DoesSocketExist(OneHandWeaponAttachSocketName))
+		{
+			MeshToAttachPistol = Mesh;
+			break;
+		}
+	}
+
+
+	bool bIsAttachmentSuccessful = PistolWeapon->AttachToComponent(MeshToAttachPistol,
+	                                                               FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+	                                                               OneHandWeaponAttachSocketName);
+	UE_LOGFMT(LogTemp, Warning, "Attach was: {0}", bIsAttachmentSuccessful);
+	PistolWeapon->Initialize(CameraComponent);
+	CombatHandler->SetWeapon(PistolWeapon);
 }

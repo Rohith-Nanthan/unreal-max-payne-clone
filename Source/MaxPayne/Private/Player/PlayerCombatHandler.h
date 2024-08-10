@@ -8,7 +8,7 @@
 
 class UMaxPayneCameraMover;
 class UPlayerInputReaderComponent;
-class UWeaponShootComponent;
+class AWeaponBase;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UPlayerCombatHandler : public UActorComponent
@@ -20,8 +20,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void Initialize(UPlayerInputReaderComponent* InputReader, UMaxPayneCameraMover* CameraMover,
-	                UWeaponShootComponent* WeaponShootComponent);
+	void Initialize(UPlayerInputReaderComponent* InputReader, UMaxPayneCameraMover* CameraMover);
+	void SetWeapon(AWeaponBase* WeaponToSet)
+	{
+		WeaponToShoot = WeaponToSet;
+	}
 	void Shoot();
 
 private:
@@ -36,14 +39,14 @@ private:
 	TObjectPtr<UPlayerInputReaderComponent> InputReader;
 
 	UPROPERTY()
-	TObjectPtr<UWeaponShootComponent> WeaponShoot;
+	TObjectPtr<AWeaponBase> WeaponToShoot;
 
 	UPROPERTY(EditAnywhere)
 	float ShootCameraFocusDuration = 3.f;
 
-	float ElapsedCameraFocusTime;
+	float ElapsedCameraFocusTimeForNormalShoot;
 	bool bIsCameraFocusingForNormalShoot;
-	bool bIsCameraAiming;
+	bool bIsCameraAimingPreviousFrame;
 
 	void CheckAndFocusCameraForShoot();
 };

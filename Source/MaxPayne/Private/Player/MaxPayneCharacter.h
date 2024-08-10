@@ -12,7 +12,7 @@ class UPlayerMovementComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UHealthComponent;
-class UWeaponShootComponent;
+class APistolWeapon;
 class UMaxPayneCameraMover;
 class UMaxPayneAnimationHandler;
 class UPlayerCombatHandler;
@@ -25,33 +25,53 @@ class AMaxPayneCharacter : public APawn
 
 public:
 	AMaxPayneCharacter();
+	void Shoot();
+
+	UFUNCTION(BlueprintPure)
+	UMaxPayneAnimationHandler* GetAnimationHandler() const
+	{
+		return MaxPayneAnimationHandler;
+	}
 
 private:
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void BeginPlay() override;
+
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	                         AActor* DamageCauser) override;
+
+	virtual void PostInitializeComponents() override;
 	virtual void PossessedBy(AController* NewController) override;
 
+	void SpawnPistol();
+
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName OneHandWeaponAttachSocketName;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APistolWeapon> PistolWeaponClass;
+
+	//Actors
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UCapsuleComponent> CapsuleCollider;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<USkeletalMeshComponent> CharacterMesh;
-	
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UPlayerMovementComponent> PlayerMover;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<APistolWeapon> PistolWeapon;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UHealthComponent> HealthComponent;
+	//Actor Components
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UWeaponShootComponent> WeaponShootComponent;
-	
+	TObjectPtr<UPlayerMovementComponent> PlayerMover;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UHealthComponent> HealthComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UPlayerCombatHandler> CombatHandler;
 
@@ -64,7 +84,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPlayerHUD> PlayerHUD;
 
-public:
-	void Shoot();
+private:
+	UPROPERTY(VisibleAnywhere)
+	TArray<USkeletalMeshComponent*> AllSkeletalMeshComponents;
 };
-
