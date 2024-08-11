@@ -85,6 +85,11 @@ void AMaxPayneCharacter::Shoot()
 	MaxPayneAnimationHandler->PlayShootAnimation();
 }
 
+UPawnMovementComponent* AMaxPayneCharacter::GetMovementComponent() const
+{
+	return PlayerMover;
+}
+
 void AMaxPayneCharacter::BeginPlay()
 {
 	Super::BeginPlay();

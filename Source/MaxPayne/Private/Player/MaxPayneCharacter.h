@@ -33,6 +33,8 @@ public:
 		return MaxPayneAnimationHandler;
 	}
 
+	virtual UPawnMovementComponent* GetMovementComponent() const override;
+
 private:
 	virtual void BeginPlay() override;
 
